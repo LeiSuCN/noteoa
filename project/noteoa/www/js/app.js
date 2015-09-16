@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('mwnoteoa', ['ionic', 'mwnoteoa.controllers', 'mwnoteoa.services', 'mwnoteoa.filters'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -31,7 +31,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-  // setup an abstract state for the tabs directive
+  // setup an abract state stfor the tabs directive
   .state('tab', {
     url: '/tab',
     abstract: true,
@@ -41,7 +41,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     url: '/task',
     views: {
       'tab-task': {
-        templateUrl: 'templates/tab-task.html'
+        templateUrl: 'templates/tab-task.html',
+        controller: 'TaskCtrl'
+      }
+    }
+  })
+  .state('tab.task-detail', { // 任务详情
+    url: '/task/:taskId',
+    views: {
+      'tab-task': {
+        templateUrl: 'templates/tab-task-detail.html',
+        controller: 'TaskDetailCtrl'
       }
     }
   })

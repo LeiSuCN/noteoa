@@ -1,4 +1,45 @@
-angular.module('starter.services', [])
+angular.module('mwnoteoa.services', [])
+
+// 任务管理
+.factory('Task', function(){
+
+  //
+  console.log( 'mwnoteoa.services.Task service is initializing...' );
+
+  var TASK_TYPE = {
+    1: {
+      name: '拓展'
+    },
+    2: {
+      name: '维护'
+    }
+  }
+
+  // 根据任务类型ID获取任务
+  // @param iType 任务类型
+  function getTaskByType( iType ){
+    return TASK_TYPE[iType];
+  }
+
+
+  // 获取任务列表
+  // @param boy 猫屋男孩
+  // @param time 任务创立的时间
+  function getTasks(boy, time){
+
+    return [
+      { id:'A001', type:1, total:2, done:2 },
+      { id:'A002', type:2, total:3, done:1 }
+    ];
+
+  }
+
+  return {
+    getTasks: getTasks,
+    getTaskByType: getTaskByType
+  }
+
+})
 
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array

@@ -1,5 +1,30 @@
-angular.module('starter.controllers', [])
+angular.module('mwnoteoa.controllers', [])
 
+// 任务管理
+.controller('TaskCtrl', function($scope, Task) {
+
+  $scope.test = function(msg){
+    alert( msg );
+  }
+
+  $scope.todayTasks = Task.getTasks();
+
+  // 查看任务内容
+  $scope.viewTodayTaskContent = function(){
+    var task = this.task;
+    console.log( task );
+  }
+
+})
+// 任务详情
+.controller('TaskDetailCtrl', function($scope, $stateParams, Task) {
+  $scope.taskId = $stateParams.taskId;
+
+  function showTaskDetail(){
+
+  }
+
+})
 .controller('DashCtrl', function($scope) {})
 
 .controller('ChatsCtrl', function($scope, Chats) {
