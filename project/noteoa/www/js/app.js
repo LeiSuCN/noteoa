@@ -59,7 +59,8 @@ angular.module('mwnoteoa', ['ionic', 'mwnoteoa.controllers', 'mwnoteoa.services'
     url: '/store',
     views: {
       'tab-store': {
-        templateUrl: 'templates/tab-store.html'
+        templateUrl: 'templates/tab-store.html',
+        controller: 'StoreCtrl'
       }
     }
   })

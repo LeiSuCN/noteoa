@@ -25,7 +25,28 @@ angular.module('mwnoteoa.controllers', [])
   }
 
 })
-.controller('DashCtrl', function($scope) {})
+
+// 门店查询
+.controller('StoreCtrl', function($scope, Store, $compile) {
+
+
+  $scope.search = function(){
+    var stores = Store.search();
+
+    var template = angular.element('#template_store_list_item').html();
+
+    var storeEles = '';
+
+    angular.forEach(stores, function(store,key){
+
+      storeEles += Mustache.render(template, store);
+
+    });
+
+    angular.element('#store_list').append( storeEles );
+  }
+
+})
 
 .controller('ChatsCtrl', function($scope, Chats) {
   // With the new view caching in Ionic, Controllers are only called

@@ -41,6 +41,30 @@ angular.module('mwnoteoa.services', [])
 
 })
 
+// 门店管理
+.factory('Store', function(){
+
+  //
+  console.log( 'mwnoteoa.services.Store service is initializing...' );
+
+
+  var _stores = [
+    { id:'44030001', name:'阿里之门', tel:'18665819711', address:'深圳市南山区里山路3栋401' },
+    { id:'44030002', name:'驿站', tel:'18665819712', address:'深圳市南山区里山路3栋401' },
+    { id:'44030003', name:'天福', tel:'18665819713' , address:'深圳市南山区里山路3栋401' }
+  ]
+
+
+  function search(){
+    return _stores;
+  }
+
+  return {
+    search: search
+  }
+
+})
+
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
 

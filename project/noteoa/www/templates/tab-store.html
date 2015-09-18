@@ -1,8 +1,36 @@
 <style type="text/css">
-
+.item-store{}
+.item-store span{ float: right;}
+.item-button{ text-align:center; }
+.item-button button{ border-radius: 50%; }
 </style>
 <ion-view view-title="门店查询">
-  <ion-content class="padding">
+  <ion-content>
+  	<div class="list">
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">店名</span>
+        <input type="text" placeholder="店名" ng-model="searchStoreName">
+      </label>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">区域</span>
+        <i class="icon icon-search placeholder-icon"></i>
+        <input type="text" placeholder="地区">
+      </label>
+      <label class="item item-button">
+        <button class="button button-calm" ng-click="search()">
+          <i class="icon ion-ios-search"></i>
+        </button>
+      </label>
+  	</div>
+
+  	<div class="list" id="store_list" ></div>
     
   </ion-content>
 </ion-view>
+
+<script type="text/html" id="template_store_list_item">
+<a class="item item-store" href="javascript:void(0)">
+  <h2>{{name}}<span>{{tel}}</span></h2>
+  <p>{{address}}</p>
+</a>  
+</script>
