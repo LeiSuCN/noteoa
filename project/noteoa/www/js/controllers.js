@@ -27,25 +27,80 @@ angular.module('mwnoteoa.controllers', [])
 })
 
 // 门店查询
-.controller('StoreCtrl', function($scope, Store, $compile) {
+.controller('StoreCtrl', function($scope, Store) {
 
+  var templateStoreListItem = angular.element('#template_store_list_item').html();
 
-  $scope.search = function(){
-    var stores = Store.search();
-
-    var template = angular.element('#template_store_list_item').html();
-
+  // 更新门店列表
+  function updateStoreListView(stores){
+    
     var storeEles = '';
-
     angular.forEach(stores, function(store,key){
-
-      storeEles += Mustache.render(template, store);
-
+      storeEles += Mustache.render(templateStoreListItem, store);
     });
 
-    angular.element('#store_list').append( storeEles );
+    var eleStoreList = angular.element('#store_list');
+    eleStoreList.empty();
+    eleStoreList.append( storeEles );
   }
 
+  $scope.search = function(){
+    Store.search( {handlerId:3,area:'南山' }, function(resp){
+      var status = resp.status;
+
+      if( status == 200 ){
+        updateStoreListView( resp.data );
+      }
+    });
+  }
+
+})
+
+// 门店详情
+.controller('StoreDetailCtrl', function($scope, $stateParams, Store) {
+
+  console.log( 'mwnoteoa.controllers.StoreDetailCtrl is initializing...' );
+
+  var storeId = $stateParams.storeId;
+  var oldStore = false;
+
+  // 数据变化时
+  function change( $event ){
+    console.log( arguments )
+  }
+
+  // 保存门店数据
+  function save(){
+
+    var store = $scope.store;
+
+    console.log( store )
+
+    var newStore = {};
+    newStore.storeId = store.id;
+    newStore.boss_phone = store.boss_phone;
+    newStore.boss_age = store.boss_age;
+
+    Store.updateOne( newStore );
+  }
+
+
+  // 查询门店数据
+  function search(){
+    Store.getOne(storeId, function(store){
+      $scope.store = store;
+      oldStore = store;
+    });
+  }
+
+
+  $scope.save = save;
+  $scope.change = change;
+
+  search();
+
+  $scope.$watch( 'store', function(){
+    angular.forEach( oldStore, function( oldValue, key){}, true)
 })
 
 .controller('ChatsCtrl', function($scope, Chats) {

@@ -42,25 +42,81 @@ angular.module('mwnoteoa.services', [])
 })
 
 // 门店管理
-.factory('Store', function(){
+.factory('Store', function($http){
 
   //
   console.log( 'mwnoteoa.services.Store service is initializing...' );
 
+  var dataUrlList = '/index.php?r=store/getlist';
 
-  var _stores = [
-    { id:'44030001', name:'阿里之门', tel:'18665819711', address:'深圳市南山区里山路3栋401' },
-    { id:'44030002', name:'驿站', tel:'18665819712', address:'深圳市南山区里山路3栋401' },
-    { id:'44030003', name:'天福', tel:'18665819713' , address:'深圳市南山区里山路3栋401' }
-  ]
+  var dataUrlUpdateStore = '/index.php?r=store/toupdate'
 
 
-  function search(){
-    return _stores;
+  var _cache_stores = false; // 缓存数据 
+
+
+  function search( params, callback ){
+
+    _cache_stores = {}; // 清空缓存
+
+    var url = MWCONFIG.server + dataUrlList;
+
+    $http.post( url, params )
+    .then(
+      function( resp ){
+
+        // 缓存查询结果
+        var status = resp.status;
+  
+        if( resp.status == 200 && resp.data){
+          var stores = resp.data;
+          angular.forEach(stores, function(store,key){
+            // store_id -> store
+            _cache_stores[ store.id ] = store;
+          });
+        }
+        // 回调结果
+        callback( resp );
+      },
+      function( resp ){
+        console.log( resp )
+      }
+    );
+  }
+
+  // 只获取一个门店信息
+  function getOne(storeId, callback){
+
+    // 先从缓存中获取
+    var store = _cache_stores[storeId]; 
+    if( store ){
+      callback( store );
+    }
+  }
+
+  // 保存门店信息
+  function updateOne( store, callback ){
+
+    
+
+    var url = MWCONFIG.server + dataUrlUpdateStore;
+
+    console.log( url )
+    $http.post(url, store )
+    .then(
+      function(resp){
+        console.log( resp )
+      } , 
+      function(resp){
+        console.error( resp )
+      }
+    );
   }
 
   return {
-    search: search
+    search: search,
+    getOne: getOne,
+    updateOne: updateOne
   }
 
 })

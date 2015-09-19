@@ -23,14 +23,20 @@
       </label>
   	</div>
 
+    <div>
+      
+    </div>
+      
+    </div>
+
   	<div class="list" id="store_list" ></div>
     
   </ion-content>
 </ion-view>
 
 <script type="text/html" id="template_store_list_item">
-<a class="item item-store" href="javascript:void(0)">
-  <h2>{{name}}<span>{{tel}}</span></h2>
+<a class="item item-store" href="#/tab/store/{{id}}">
+  <h2>{{leaguer_name}}<span>{{boss_phone}}</span></h2>
   <p>{{address}}</p>
 </a>  
 </script>

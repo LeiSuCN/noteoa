@@ -20,6 +20,11 @@ angular.module('mwnoteoa', ['ionic', 'mwnoteoa.controllers', 'mwnoteoa.services'
       // org.apache.cordova.statusbar required
       StatusBar.styleLightContent();
     }
+
+    // 全局配置
+    window.MWCONFIG = window.MWCONFIG || {
+      server: 'http://192.168.1.19:84'
+    }
   });
 })
 
@@ -61,6 +66,15 @@ angular.module('mwnoteoa', ['ionic', 'mwnoteoa.controllers', 'mwnoteoa.services'
       'tab-store': {
         templateUrl: 'templates/tab-store.html',
         controller: 'StoreCtrl'
+      }
+    }
+  })
+  .state('tab.store-detail', { // 门店查询－详情
+    url: '/store/:storeId',
+    views: {
+      'tab-store': {
+        templateUrl: 'templates/tab-store-detail.html',
+        controller: 'StoreDetailCtrl'
       }
     }
   })
