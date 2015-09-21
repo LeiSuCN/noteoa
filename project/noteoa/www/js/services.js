@@ -1,42 +1,156 @@
 angular.module('mwnoteoa.services', [])
 
 // 任务管理
-.factory('Task', function(){
+.factory('Task', function($http){
 
   //
   console.log( 'mwnoteoa.services.Task service is initializing...' );
 
-  var TASK_TYPE = {
-    1: {
-      name: '拓展'
+  var dataUrlMissionListToday = '/index.php?r=mission/getlist-today'
+  var dataUrlUpdateStore = '/index.php?r=mission/updstore'
+  var dataUrlAddStore = '/index.php?r=mission/addstore'
+  var dataUrlFinish = '/index.php?r=mission/finished'; // 完成任务
+  var dataUrlCreateQuestion = '/index.php?r=question/build'; // 创建问题
+
+  // 内部变量，用来在controller中共享变量
+  var _shares = {};
+  var _todayTasks = [];
+
+  var taskTypes = {
+    '0': {
+      name: '拓展',
+      id: '0'
     },
-    2: {
-      name: '维护'
+    '1': {
+      name: '维护',
+      id: '1'
     }
   }
-
-  // 根据任务类型ID获取任务
-  // @param iType 任务类型
-  function getTaskByType( iType ){
-    return TASK_TYPE[iType];
-  }
-
 
   // 获取任务列表
   // @param boy 猫屋男孩
   // @param time 任务创立的时间
-  function getTasks(boy, time){
+  function getTodayTasks(params, callback){
 
-    return [
-      { id:'A001', type:1, total:2, done:2 },
-      { id:'A002', type:2, total:3, done:1 }
-    ];
+    _todayTasks.length = 0;
+
+    $http.post( MWCONFIG.server + dataUrlMissionListToday, params )
+    .then(
+      function( resp ){
+        if( resp.status == 200 && resp.data){
+          angular.forEach(resp.data, function(task){
+            _todayTasks.push( task );
+          })
+        }
+        // 回调结果
+        if( callback )
+          callback( _todayTasks );
+      },
+      function( resp ){ console.error( resp ) }
+    );
+  }
+
+  // 获取任务列表,必须先执行getTodayTasks
+  // @param taskId 任务ID
+  function getTodayTask(taskId){
+    var result;
+    angular.forEach(_todayTasks,function(task){
+      if( taskId == task.id ){
+        result = task;
+      }
+    });
+    
+    return result;
+  }
+
+  // 创建任务
+  function createTask(task, callback){
+
+    var url = MWCONFIG.server;
+    if( task.type == '0' ){
+      url += dataUrlAddStore;
+    } else if( task.type == '1' ){
+      url += dataUrlUpdateStore;
+    } else{
+      return; //TODO
+    }
+
+    $http.post( url, task )
+    .then(
+      function( resp ){
+
+        // 缓存查询结果
+        var status = resp.status;
+  
+        if( resp.status == 200 && resp.data){
+          //
+        }
+        // 回调结果
+        callback( resp );
+      },
+      function( resp ){ console.error( resp ) }
+    );
 
   }
 
+  // 更新任务
+  function updateTask(task, callback){
+    $http.post( MWCONFIG.server + dataUrlFinish, task )
+    .then(
+      function( resp ){
+  
+        if( resp.status == 200 && resp.data){
+          //
+        }
+        // 回调结果
+        callback( resp );
+      },
+      function( resp ){ console.error( resp ) }
+    );
+  }
+
+  // 创建问题
+  function createQuestion(question, callback){
+
+    var url = MWCONFIG.server + dataUrlCreateQuestion;
+
+    $http.post( url, question )
+    .then(
+      function( resp ){
+
+        // 缓存查询结果
+        var status = resp.status;
+  
+        if( resp.status == 200 && resp.data){
+          //
+        }
+        // 回调结果
+        callback( resp );
+      },
+      function( resp ){ console.error( resp ) }
+    );
+
+  }
+
+  // 设置共享变量
+  function setShareValue( name, value ){
+    _shares[name] = value;
+  }
+
+  // 获取共享变量
+  function getShareValue( name ){
+    return _shares[name];
+  }
+
   return {
-    getTasks: getTasks,
-    getTaskByType: getTaskByType
+    taskTypes:taskTypes,
+    setShareValue: setShareValue,
+    getShareValue: getShareValue,
+    getTodayTasks: getTodayTasks,
+    getTodayTask: getTodayTask,
+    createTask: createTask,
+    updateTask: updateTask,
+    createQuestion: createQuestion
   }
 
 })
@@ -52,6 +166,7 @@ angular.module('mwnoteoa.services', [])
   var dataUrlUpdateStore = '/index.php?r=store/toupdate'
 
 
+  var _cache_all_stores = false; // 缓存全部门店数据
   var _cache_stores = false; // 缓存数据 
 
 
@@ -76,7 +191,35 @@ angular.module('mwnoteoa.services', [])
           });
         }
         // 回调结果
-        callback( resp );
+        callback( _cache_stores );
+      },
+      function( resp ){
+        console.log( resp )
+      }
+    );
+  }
+
+  // 获取全部门店信息
+  function getAll(params, callback){
+
+    // 先从缓存中获取
+    if( _cache_all_stores ){
+      callback( _cache_all_stores );
+      return;
+    }
+
+    $http.post( MWCONFIG.server + dataUrlList, params )
+    .then(
+      function( resp ){
+
+        // 缓存查询结果
+        var status = resp.status;
+  
+        if( resp.status == 200 && resp.data){
+          _cache_all_stores = resp.data;
+        }
+        // 回调结果
+        callback( _cache_all_stores );
       },
       function( resp ){
         console.log( resp )
@@ -97,15 +240,26 @@ angular.module('mwnoteoa.services', [])
   // 保存门店信息
   function updateOne( store, callback ){
 
-    
-
     var url = MWCONFIG.server + dataUrlUpdateStore;
 
     console.log( url )
     $http.post(url, store )
     .then(
       function(resp){
-        console.log( resp )
+
+        // 更新成功需要更新缓存
+        if( resp.status == 200 ){
+          var cacheStore = _cache_stores[store.storeId];
+          if( cacheStore ){
+            angular.forEach(store, function( value, name){
+              if( name != 'storeId' ){
+                cacheStore[name] = value;
+              }
+            });
+          }
+        }
+
+        if( callback ) callback( resp );
       } , 
       function(resp){
         console.error( resp )
@@ -116,9 +270,29 @@ angular.module('mwnoteoa.services', [])
   return {
     search: search,
     getOne: getOne,
+    getAll: getAll,
     updateOne: updateOne
   }
 
+})
+
+// 个人管理
+.factory('User', function($http){
+
+  var api = {};
+
+  var _me = {
+      id: 3,
+      name: '宿磊',
+      phone: '18124632649'
+  }
+
+  api.me = function(){
+    return _me;
+  }
+
+
+  return api;
 })
 
 .factory('Chats', function() {

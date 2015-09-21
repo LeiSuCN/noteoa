@@ -1,20 +1,31 @@
 <style type="text/css">
 .item-store{}
 .item-store span{ float: right;}
-.item-button{ text-align:center; }
+.item-button{ text-align:center; border-right: 0px; border-left: 0px; }
 .item-button button{ border-radius: 50%; }
+.item-select select{
+  right: auto;
+  padding: 0 48px 0 0px;
+}
 </style>
 <ion-view view-title="门店查询">
   <ion-content>
-  	<div class="list">
-      <label class="item item-input item-stacked-label">
-        <span class="input-label">店名</span>
+  	<div class="list padding">
+      <label class="item item-input">
+        <span class="input-label">门店名称</span>
         <input type="text" placeholder="店名" ng-model="searchStoreName">
       </label>
-      <label class="item item-input item-stacked-label">
-        <span class="input-label">区域</span>
-        <i class="icon icon-search placeholder-icon"></i>
-        <input type="text" placeholder="地区">
+      <label class="item item-input item-select">
+        <span class="input-label">门店区域</span>
+        <select type="text" ng-model="searchStoreArea">
+          <option value="9000000">全部</option>
+          <option value="440300001">宝安</option>
+          <option value="440300002">南山</option>
+          <option value="440300003">福田</option>
+          <option value="440300004">龙岗</option>
+          <option value="440300005">罗湖</option>
+          <option value="440300006">龙华</option>
+        </select>
       </label>
       <label class="item item-button">
         <button class="button button-calm" ng-click="search()">

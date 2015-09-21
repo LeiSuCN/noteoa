@@ -1,0 +1,26 @@
+<style type="text/css">
+</style>
+<ion-view view-title="门店搜索">
+  <ion-content>
+
+    <div class="bar bar-header item-input-inset">
+      <label class="item-input-wrapper">
+        <i class="icon ion-ios-search placeholder-icon"></i>
+        <input type="search" placeholder="搜索" ng-model="query">
+      </label>
+      <button class="button button-balanced" ng-click="confirm()">确定</button>
+    </div>
+
+  	<div class="list" id="store_search_list" >
+      <label class="item item-radio" ng-repeat="store in stores | filter:query">
+        <input type="radio" ng-model="result.store" ng-value="store">
+        <div class="item-content">
+          <h2>{{store.leaguer_name}}<span style="margin-left:2em;">{{store.boss_phone}}</span></h2>
+          <p>{{store.address}}</p>
+        </div>
+        <i class="radio-icon ion-checkmark"></i>
+      </label>         
+    </div>
+    
+  </ion-content>
+</ion-view>

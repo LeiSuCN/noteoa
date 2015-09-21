@@ -1,26 +1,54 @@
 <style type="text/css">
-
+.item-select select{
+  right: auto;
+  padding: 0 48px 0 0px;
+}
 </style>
 <ion-view view-title="任务详情">
   <ion-content>
-    {{ taskId }}
 
     <div class="list">
-      <a  class="item item-icon-left item-icon-right" href="javascript:void(0)">
-        <i class="icon ion-ios-flag"></i>
-        维护 阿里之门
-        <i class="icon ion-ios-plus-empty"></i>
-      </a>
-      <div class=" item list padding">
-        <label class="item item-input item-stacked-label">
-          <span class="input-label">门店名称</span>
-          <input type="text" value="阿里之门">
-        </label>
-        <label class="item item-input item-stacked-label">
-          <span class="input-label">地址</span>
-          <input type="text" value="深圳市南山区里山路">
-        </label>
-      </div>
+      <label class="item item-input">
+        <span class="input-label">门店名称</span>
+        <input type="text" ng-model="task.leaguerName"> 
+      </label>
+      <label class="item item-input">
+        <span class="input-label">老板姓名</span>
+        <input type="text" ng-model="task.bossName"> 
+      </label>
+      <label class="item item-input">
+        <span class="input-label">老板电话</span>
+        <input type="text" ng-model="task.bossPhone"> 
+      </label>
+      <label class="item item-input item-select">
+        <span class="input-label">门店区域</span>
+        <select type="text" ng-model="task.areaId">
+          <option value="440300001">宝安</option>
+          <option value="440300002">南山</option>
+          <option value="440300003">福田</option>
+          <option value="440300004">龙岗</option>
+          <option value="440300005">罗湖</option>
+          <option value="440300006">龙华</option>
+        </select>
+      </label>
+      <label class="item item-input">
+        <span class="input-label">门店地址</span>
+        <input type="text" ng-model="task.address"> 
+      </label>
+
+      <div class="row padding">
+        <div class="col">
+          <a class="button icon ion-plus button-block button-calm" href="#/tab/task/{{task.missionId}}/question">
+            创建问题
+          </a>          
+        </div>
+        <div class="col">
+          <button id="task_detail_btn_submit" class="button icon ion-checkmark button-block button-balanced" ng-click ="submit()">
+            提交任务
+          </button>
+        </div>   
+      </div>  
+
     </div>
     
 

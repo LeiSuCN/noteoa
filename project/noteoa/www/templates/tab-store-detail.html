@@ -1,32 +1,33 @@
 <!-- CSS -->
 <style type="text/css">
+.ng-dirty{ color: red!important; }
 </style>
 <!-- HTML -->
 <ion-view view-title="门店信息">
   <ion-content>
-  	<div class="list">
+  	<form name="form" class="list" ng-init="setFormScope(this)">
   		<div class="item item-divider item-positive">门店信息</div>
   		<!-- 门店名称 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">门店编号</span>
-  			<input type="text" name="" ng-model="store.id">
+  			<input type="text" name="id" ng-model="store.id">
   		</label>
   		<!-- 菜鸟ID -->
   		<!-- 优管家ID -->
   		<!-- 负责人 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">负责人</span>
-  			<input type="text" name="" ng-model="store.boss_name">
+  			<input type="text" name="boss_name" ng-model="store.boss_name">
   		</label>
   		<!-- 联系方式 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">联系方式</span>
-  			<input type="text" name="" ng-model="store.boss_phone">
+  			<input type="text" name="boss_phone" ng-model="store.boss_phone">
   		</label>
   		<!-- 门店地理位置 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">门店地理位置</span>
-  			<input type="text" name="" ng-model="store.address">
+  			<input type="text" name="address" ng-model="store.address">
   		</label>
   		<!-- 入口位置 -->
   		<label class="item item-input item-stacked-label">
@@ -36,12 +37,12 @@
   		<!-- 开业时间 -->
    		<label class="item item-input item-stacked-label">
   			<span class="input-label">开业时间</span>
-  			<input type="text" name="" ng-model="store.opening_time">
+  			<input type="text" name="opening_time" ng-model="store.opening_time">
   		</label>
  		<!-- 门店主营业务 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">门店主营业务</span>
-  			<input type="text" name="" ng-model="store.major_business">
+  			<input type="text" name="major_business" ng-model="store.major_business">
   		</label>
 
   		<!-- 门店周边环境 -->
@@ -59,12 +60,12 @@
   		<!-- 辐射人群消费力 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">辐射人群消费力</span>
-  			<input type="text" name="" ng-model="store.avg_spending">
+  			<input type="text" name="avg_spending" ng-model="store.avg_spending">
   		</label>
   		<!-- 辐射人流量（人／天） -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">辐射人流量（人／天）</span>
-  			<input type="text" name="" ng-model="store.avg_person_day">
+  			<input type="text" name="avg_person_day" ng-model="store.avg_person_day">
   		</label>
 
   		<!-- 门店硬件实力 -->
@@ -72,32 +73,32 @@
   		<!-- 门店面积 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">门店面积</span>
-  			<input type="text" name="" ng-model="store.store_acreage">
+  			<input type="text" name="store_acreage" ng-model="store.store_acreage">
   		</label>
   		<!-- 店内设施 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">店内设施</span>
-  			<input type="text" name="" ng-model="store.store_equipment">
+  			<input type="text" name="store_equipment" ng-model="store.store_equipment">
   		</label>
   		<!-- 存放面积 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">存放面积</span>
-  			<input type="text" name="" ng-model="store.house_acreage">
+  			<input type="text" name="house_acreage" ng-model="store.house_acreage">
   		</label>
   		<!-- 门店经营人数 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">门店经营人数</span>
-  			<input type="text" name="" ng-model="store.store_member_num">
+  			<input type="text" name="store_member_num" ng-model="store.store_member_num">
   		</label>
   		<!-- 年龄段 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">年龄段</span>
-  			<input type="text" name="" ng-model="store.store_member_age">
+  			<input type="text" name="store_member_age" ng-model="store.store_member_age">
   		</label>
   		<!-- 老板是否参与 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">老板是否参与</span>
-  			<input type="text" name="" ng-model="store.boss_in">
+  			<input type="text" name="boss_in" ng-model="store.boss_in">
   		</label>
 
   		<!-- 门店软件实力 -->
@@ -105,22 +106,22 @@
   		<!-- 加入猫屋时间 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">加入猫屋时间</span>
-  			<input type="text" name="" ng-model="store.create_date">
+  			<input type="text" name="create_date" ng-model="store.create_date">
   		</label>
   		<!-- 进店人流量 -->
    		<label class="item item-input item-stacked-label">
   			<span class="input-label">进店人流量</span>
-  			<input type="text" name="" ng-model="store.avg_person_day">
+  			<input type="text" name="avg_person_day" ng-model="store.avg_person_day">
   		</label>
  		<!-- 营业时间 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">营业时间</span>
-  			<input type="text" name="" ng-model="store.opening_time">
+  			<input type="text" name="opening_time" ng-model="store.opening_time">
   		</label>
   		<!-- 营业额 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">营业额</span>
-  			<input type="text" name="" ng-model="store.avg_sell_day">
+  			<input type="text" name="avg_sell_day" ng-model="store.avg_sell_day">
   		</label>
 
   		<!-- 已有的增值服务项目 -->
@@ -132,30 +133,30 @@
   		<!-- 年龄 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">年龄</span>
-  			<input type="text" name="" ng-model="store.boss_age">
+  			<input type="text" name="boss_age" ng-model="store.boss_age">
   		</label>
   		<!-- 家庭成员 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">家庭成员</span>
-  			<input type="text" name="" ng-model="store.boss_home_member">
+  			<input type="text" name="boss_home_member" ng-model="store.boss_home_member">
   		</label>
   		<!-- 互联网意识 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">互联网意识</span>
-  			<input type="text" name="" ng-model="store.boss_net_feel">
+  			<input type="text" name="boss_net_feel" ng-model="store.boss_net_feel">
   		</label>
   		<!-- 微信号 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">微信号</span>
-  			<input type="text" name="" ng-model="store.boss_wechat">
+  			<input type="text" name="boss_wechat" ng-model="store.boss_wechat">
   		</label>
   		<!-- 拓展员备注 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">拓展员备注</span>
-  			<input type="text" name="" ng-model="store.info">
+  			<input type="text" name="info" ng-model="store.info">
   		</label>
 
-  	</div> 
+  	</form> 
 
   	<div class="padding">
   		<button class="button button-block button-balanced" ng-click="save()">

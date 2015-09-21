@@ -23,7 +23,8 @@ angular.module('mwnoteoa', ['ionic', 'mwnoteoa.controllers', 'mwnoteoa.services'
 
     // 全局配置
     window.MWCONFIG = window.MWCONFIG || {
-      server: 'http://192.168.1.19:84'
+      //server: 'http://192.168.1.19:84'
+      server: 'http://mwnboy.mailworld.org'
     }
   });
 })
@@ -42,7 +43,10 @@ angular.module('mwnoteoa', ['ionic', 'mwnoteoa.controllers', 'mwnoteoa.services'
     abstract: true,
     templateUrl: 'templates/tabs.html'
   })
-  .state('tab.task', { // 任务管理
+
+
+  // 工作管理 - 本日任务
+  .state('tab.task', { 
     url: '/task',
     views: {
       'tab-task': {
@@ -51,7 +55,31 @@ angular.module('mwnoteoa', ['ionic', 'mwnoteoa.controllers', 'mwnoteoa.services'
       }
     }
   })
-  .state('tab.task-detail', { // 任务详情
+
+  // 工作管理 - 新增任务
+  .state('tab.task-add', { 
+    url: '/task/add',
+    views: {
+      'tab-task': {
+        templateUrl: 'templates/tab-task-add.html',
+        controller: 'TaskAddCtrl'
+      }
+    }
+  })
+
+  // 工作管理 - 新增任务 - 选择门店
+  .state('tab.task-ssearch', { 
+    url: '/task/ssearch',
+    views: {
+      'tab-task': {
+        templateUrl: 'templates/tab-task-store-search.html',
+        controller: 'TaskStoreSearchCtrl'
+      }
+    }
+  })
+
+  // 工作管理 - 任务详情
+  .state('tab.task-detail', { 
     url: '/task/:taskId',
     views: {
       'tab-task': {
@@ -60,6 +88,18 @@ angular.module('mwnoteoa', ['ionic', 'mwnoteoa.controllers', 'mwnoteoa.services'
       }
     }
   })
+
+  // 工作管理 - 任务详情 - 问题反馈
+  .state('tab.task-question', { 
+    url: '/task/:taskId/question',
+    views: {
+      'tab-task': {
+        templateUrl: 'templates/tab-task-question.html',
+        controller: 'TaskQuestionCtrl'
+      }
+    }
+  })
+
   .state('tab.store', { // 门店查询
     url: '/store',
     views: {

@@ -1,0 +1,22 @@
+<style type="text/css">
+.question-content{ height: 10em; }
+
+</style>
+<ion-view view-title="问题反馈">
+  <ion-content>
+    <div class="list padding">
+      <label class="item item-input">
+        <input type="text" ng-model="questionTitle" placeholder="问题概要"> 
+      </label>
+      <label class="item item-input">
+        <textarea class="question-content" ng-model="questionContent" placeholder="问题详情"></textarea>
+      </label>
+    </div>
+
+    <div class="padding">
+      <button id="task_detail_btn_submit" class="button icon ion-checkmark button-block button-balanced" ng-click ="submit()">
+        提交问题
+      </button>
+    </div>
+  </ion-content>
+</ion-view>

@@ -9,13 +9,13 @@
   <ion-content class="padding">
   	<div id="taskTody" class="card">
   		<div class="item item-divider item-icon-right">
-  			本日工作任务<i class="icon ion-ios-gear" ng-click="test('hello world')"></i>
+  			本日工作任务<a  href="#/tab/task/add"><i class="icon ion-ios-plus-outline"></i></a>
   		</div>
 
-		<a ng-repeat=" task in todayTasks" class="item item-icon-left task-status-{{ task | taskstatus}}" href="#/tab/task/{{task.id}}">
-			<i class="icon {{ task | taskstatusicon}}"></i>
-			{{task.done}}/{{task.total}} {{ task.type | taskid2taskname }}
-		</a>
+      <a ng-repeat=" task in todayTasks" class="item item-icon-left task-status-{{ task   | taskstatus}}" href="#/tab/task/{{task.id}}">
+        <i class="icon {{ task | taskstatusicon}}"></i>
+        {{ task | task_description }}
+      </a>
 
   		<div class="item item-divider">
   			
@@ -24,3 +24,4 @@
     
   </ion-content>
 </ion-view>
+
