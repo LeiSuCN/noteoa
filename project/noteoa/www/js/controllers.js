@@ -10,6 +10,20 @@ angular.module('mwnoteoa.controllers', ['ionic'])
 
   $scope.todayTasks = [];
 
+  //
+  $scope.toggle = function( code ){
+    var eleList = angular.element( '#task_list_' + code );
+    eleList.fadeToggle('fast');
+    var eleArror = angular.element('#arrow' + code);
+    if( eleArror.hasClass('ion-ios-arrow-down') ){
+      eleArror.removeClass('ion-ios-arrow-down')
+      eleArror.addClass('ion-ios-arrow-right')
+    } else{
+      eleArror.removeClass('ion-ios-arrow-right')
+      eleArror.addClass('ion-ios-arrow-down')
+    }
+  }
+
   // 获取今天任务
  $scope.getTodayTasks = function(){
     $scope.sumary0.done = 0;
