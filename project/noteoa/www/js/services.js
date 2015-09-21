@@ -1,3 +1,8 @@
+top.window.MWCONFIG = top.window.MWCONFIG || {
+  //server: 'http://192.168.1.19:84'
+  server: 'http://mwnboy.mailworld.org'
+}
+
 angular.module('mwnoteoa.services', [])
 
 // 任务管理

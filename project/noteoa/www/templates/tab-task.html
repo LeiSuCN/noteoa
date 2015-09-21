@@ -12,10 +12,32 @@
   			本日工作任务<a  href="#/tab/task/add"><i class="icon ion-ios-plus-outline"></i></a>
   		</div>
 
-      <a ng-repeat=" task in todayTasks" class="item item-icon-left task-status-{{ task   | taskstatus}}" href="#/tab/task/{{task.id}}">
-        <i class="icon {{ task | taskstatusicon}}"></i>
-        {{ task | task_description }}
-      </a>
+      <div class="item list"  style="padding-right: 0px;">
+        <div class="item item-icon-left" ng-click="">
+          <i class="icon ion-person-stalker"></i>
+          拓展
+          <span class="badge badge-assertive">{{ tasks0.length - sumary0.done }}</span>
+        </div>
+        <div class="item list">
+          <a ng-repeat=" task in tasks0" class="item item-icon-left task-status-{{ task | taskstatus}}" href="#/tab/task/{{task.id}}">
+            <i class="icon {{ task | taskstatusicon}}"></i>
+            {{ task | task_description }}
+          </a>
+        </div>
+
+        <div class="item item-icon-left">
+          <i class="icon ion-person-stalker"></i>
+          维护
+          <span class="badge badge-assertive">{{ sumary1.done }}</span>
+        </div>
+        <div class="item list">
+          <a ng-repeat=" task in tasks1" class="item item-icon-left task-status-{{ task | taskstatus}}" href="#/tab/task/{{task.id}}">
+            <i class="icon {{ task | taskstatusicon}}"></i>
+            {{ task | task_description }}
+          </a>
+        </div>
+
+      </div>
 
   		<div class="item item-divider">
   			

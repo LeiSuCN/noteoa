@@ -3,32 +3,50 @@
 .btn{ text-align: center; }
 .btn a{ color: #ef473a!important; }
 
+.controll{ position:absolute; top: 0; right: 1em;}
+.controll span{ border:0px;}
+
+.checkbox input, .checkbox-icon{ width: 24px; height: 24px;}
+#upd_store_list .checkbox input:checked:before, .checkbox input:checked + .checkbox-icon:before{
+  background-color: #ef473a;
+  border-color: #ef473a;
+}
+
 </style>
 <ion-view view-title="新增">
   <ion-content>
-    <div class="row">
-    </div>
-    
+
     <div class="list">
-      <div class="item item-divider">任务类型</div>
-      <label class="item item-radio">
-        <input type="radio" name="type" value="addstore" ng-model="taskStore.type" ng-value="types.addstore" ng-change="typeChange()">
-        <div class="item-content">拓展</div>
-        <i class="radio-icon ion-checkmark"></i>
-      </label>
-       <label class="item item-radio">
-        <input type="radio" name="type" value="updstore" ng-model="taskStore.type" ng-value="types.updstore" ng-change="typeChange()">
-        <div class="item-content">维护</div>
-        <i class="radio-icon ion-checkmark"></i>
-      </label>
-      <label class="item item-store for-updstore">
-        <h2>{{taskStore.store.leaguer_name}}<span style="margin-left:2em;">{{taskStore.store.boss_phone}}</span></h2>
-        <p>{{taskStore.store.address}}</p>
-      </label>         
+      <div class="item item-input">
+        <span class="input-label">拓展</span>
+        <div class="controll">
+          <button class="button button-clear button-positive icon ion-ios-minus-empty" ng-click="decreaseAddStore();"></button>
+          <span class="button">{{addStore}}</span>
+          <button class="button button-clear button-positive icon ion-ios-plus-empty" ng-click="increaseAddStore();"></button>
+        </div>
+      </div>
+      <div class="item item-input">
+        <span class="input-label">维护</span>
+        <div class="controll">
+          <button class="button button-clear button-positive icon ion-ios-minus-empty" ng-click="increaseUpdStore();"></button>
+          <span class="button">{{updStore.length}}</span>
+          <a class="button button-clear button-positive icon ion-ios-plus-empty" href="#/tab/task/ssearch"></a>
+        </div>
+      </div>
     </div>
-    <div class="btn for-updstore">
-      <a href="#/tab/task/ssearch">选择门店</a>
-    </div>
+
+    <ul class="list" id="upd_store_list">
+      <li class="item item-checkbox" ng-repeat="store in updStore">
+        <label class="checkbox">
+          <input type="checkbox" ng-model="store.delete" >  
+        </label>
+        <div class="item-content">
+          <h2>{{store.leaguer_name}}<span style="margin-left:2em;">{{store.boss_phone}}</span></h2>
+          <p>{{store.address}}</p>
+        </div>
+      </li>
+    </ul>
+
     <div class="padding">
       <button class="button button-block button-balanced" ng-click="save()">
         保存

@@ -22,7 +22,7 @@ angular.module('mwnoteoa', ['ionic', 'mwnoteoa.controllers', 'mwnoteoa.services'
     }
 
     // 全局配置
-    window.MWCONFIG = window.MWCONFIG || {
+    top.window.MWCONFIG = top.window.MWCONFIG || {
       //server: 'http://192.168.1.19:84'
       server: 'http://mwnboy.mailworld.org'
     }

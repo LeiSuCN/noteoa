@@ -11,16 +11,17 @@
       <button class="button button-balanced" ng-click="confirm()">确定</button>
     </div>
 
-  	<div class="list" id="store_search_list" >
-      <label class="item item-radio" ng-repeat="store in stores | filter:query">
-        <input type="radio" ng-model="result.store" ng-value="store">
+    <ul class="list">
+      <li class="item item-checkbox" ng-repeat="store in stores | filter:query">
+        <label class="checkbox">
+          <input type="checkbox" ng-model="store.checked" >  
+        </label>
         <div class="item-content">
           <h2>{{store.leaguer_name}}<span style="margin-left:2em;">{{store.boss_phone}}</span></h2>
           <p>{{store.address}}</p>
         </div>
-        <i class="radio-icon ion-checkmark"></i>
-      </label>         
-    </div>
+      </li>
+    </ul>
     
   </ion-content>
 </ion-view>
