@@ -8,16 +8,16 @@
   padding: 0 48px 0 0px;
 }
 </style>
-<ion-view view-title="门店查询">
+<ion-view view-title="番茄辣椒">
   <ion-content>
   	<div class="list padding">
       <label class="item item-input">
-        <span class="input-label">门店名称</span>
-        <input type="text" placeholder="店名" ng-model="searchStoreName">
+        <span class="input-label">店名或电话</span>
+        <input type="text" placeholder="店名/电话" ng-model="queryCondition.leaguerName">
       </label>
       <label class="item item-input item-select">
         <span class="input-label">门店区域</span>
-        <select type="text" ng-model="searchStoreArea">
+        <select ng-model="queryCondition.areaId">
           <option value="9000000">全部</option>
           <option value="440300001">宝安</option>
           <option value="440300002">南山</option>
@@ -34,13 +34,7 @@
       </label>
   	</div>
 
-    <div>
-      
-    </div>
-      
-    </div>
-
-  	<div class="list" id="store_list" ></div>
+    <div class="list" id="store_list" ></div>
     
   </ion-content>
 </ion-view>

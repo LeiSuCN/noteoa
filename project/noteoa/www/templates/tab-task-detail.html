@@ -4,7 +4,12 @@
   padding: 0 48px 0 0px;
 }
 </style>
-<ion-view view-title="任务详情">
+<ion-view view-title="番茄辣椒">
+
+  <ion-nav-buttons side="right">
+    <button id="task_detail_btn_submit" class="button button-clear button-dark" ng-click ="submit()">提交</button>  
+  </ion-nav-buttons>
+
   <ion-content>
 
     <div class="list">
@@ -36,21 +41,33 @@
         <input type="text" ng-model="task.address"> 
       </label>
 
-      <div class="row padding">
-        <div class="col">
-          <a class="button icon ion-plus button-block button-calm" href="#/tab/task/{{task.missionId}}/question">
-            创建问题
-          </a>          
+      <div class="card ng-hide"  ng-hide="task.type == 0">
+        <div class="item item-divider item-icon-right">
+          维护记录
+        </div>  
+        <div class="item" style="padding: 0; ">
+          <textarea name="" style="width: 100%; height: 4em;" maxlength="50" ng-model="task.record"></textarea>
         </div>
-        <div class="col">
-          <button id="task_detail_btn_submit" class="button icon ion-checkmark button-block button-balanced" ng-click ="submit()">
-            提交任务
-          </button>
-        </div>   
-      </div>  
+      </div>
+
+      <div class="card">
+        <div class="item item-divider item-icon-right" ng-click="toggleQuestionList()">
+          问题列表
+          <i class="icon ion-ios-arrow-down" id="qustionListArrow"></i>
+        </div>
+        <div class="item list" id="question_list" style=" padding-right: 0px; ">
+          <div class="item" ng-repeat=" question in task.questions">
+            问题{{$index + 1}}:
+            <textarea name="" style="width:100%; " maxlength="40" ng-model="question.question_title"></textarea>
+          </div>
+          <div class="item" style="text-align: center; padding: 0px; ">
+            <a class="button button-icon icon ion-ios-plus positive" href="javascript:void(0)" ng-click="addQuestion()"></a>
+          </div>
+        </div>
+      </div>
+
 
     </div>
-    
-
+ 
   </ion-content>
 </ion-view>

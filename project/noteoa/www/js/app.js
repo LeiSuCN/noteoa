@@ -118,11 +118,21 @@ angular.module('mwnoteoa', ['ionic', 'mwnoteoa.controllers', 'mwnoteoa.services'
       }
     }
   })
-  .state('tab.chat-setting', { // 个人中心
+  .state('tab.tab-setting', { // 个人中心
     url: '/setting',
     views: {
       'tab-setting': {
-        templateUrl: 'templates/tab-setting.html'
+        templateUrl: 'templates/tab-setting.html',
+        controller: 'PersonCtrl'
+      }
+    }
+  })
+  .state('tab.login', { // 登陆
+    url: '/login',
+    views: {
+      'tab-setting': {
+        templateUrl: 'templates/tab-login.html',
+        controller: 'LoginCtrl'
       }
     }
   });

@@ -1,8 +1,20 @@
 <style type="text/css">
 
 </style>
-<ion-view view-title="个人中心">
+<ion-view view-title="番茄辣椒">
   <ion-content class="padding">
-    
+  	<div class="card list">
+  		<a class="item item-icon-left" href="javascript:void(0)">
+  			<i class="icon ion-ios-person"></i>{{me.name}}
+  		</a>
+  		<a class="item item-icon-left" href="javascript:void(0)">
+  			<i class="icon ion-ios-telephone"></i>{{me.phone}}
+  		</a>
+  		<a class="item item-icon-left" href="javascript:void(0)">
+  			<i class="icon ion-ios-flag"></i>{{me.area_id | areaid2name }}
+  		</a>
+
+  	</div>
+    <button class="button button-block button-assertive" ng-click="logout()">退出<tton>
   </ion-content>
 </ion-view>

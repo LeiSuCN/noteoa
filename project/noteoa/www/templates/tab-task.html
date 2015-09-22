@@ -2,21 +2,21 @@
 #taskTody .icon{ font-size: 1.2em;}
 #taskTody .item-icon-left{ padding-left: 2.7em; }
 .task-status{}
-.task-status-doing{ color:#11c1f3!important; }
+.task-status-doing{ color:#ef473a!important; }
 .task-status-done{ color:#33cd5f!important; text-decoration: line-through;}
 </style>
-<ion-view view-title="任务管理">
+<ion-view view-title="番茄辣椒">
   <ion-content class="padding">
   	<div id="taskTody" class="card">
   		<div class="item item-divider item-icon-right">
-  			本日工作任务<a  href="#/tab/task/add"><i class="icon ion-ios-plus-outline"></i></a>
+  			{{today | date : 'MM月dd日'}}关注番茄<a  href="#/tab/task/add"><i class="icon ion-ios-plus-outline"></i></a>
   		</div>
 
       <div class="item list"  style="padding-right: 0px; margin-bottom: 0px;">
         <div class="item item-icon-left item-icon-right" ng-click="toggle('0')">
           <i class="icon ion-ios-bolt-outline"></i>
-          拓展
-          <span class="badge badge-assertive" style="margin-right: .5em;">{{ tasks0.length - sumary0.done }}</span>
+          种番茄（拓展）
+          <span class="badge badge-balanced" style="margin-right: .5em;">＋{{ sumary0.done }}</span>
           <i class="icon ion-ios-arrow-right" id="arrow0"></i>
         </div>
         <div class="item list" id="task_list_0" style="display: none;">
@@ -28,8 +28,8 @@
 
         <div class="item item-icon-left item-icon-right" ng-click="toggle('1')">
           <i class="icon ion-ios-flame-outline"></i>
-          维护
-          <span class="badge badge-assertive" style="margin-right: .5em;">{{ tasks1.length - sumary1.done }}</span>
+          收辣椒（维护）
+          <span class="badge badge-balanced" style="margin-right: .5em;">＋{{ sumary1.done }}</span>
           <i class="icon ion-ios-arrow-right" id="arrow1"></i>
         </div>
         <div class="item list" id="task_list_1" style="display: none;">

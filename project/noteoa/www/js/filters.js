@@ -40,7 +40,9 @@ angular.module('mwnoteoa.filters', ['mwnoteoa.services'])
 
     // 完成时间
     if( task.mission_state == '1' ){
-      description += $filter('date')(parseInt(task.update_date) * 1000, ' @yyyy-MM-dd HH:mm');
+      description += ' － 已完成' + $filter('date')(parseInt(task.update_date) * 1000, ' @HH:mm');
+    } else{
+      description += ' － 等待提交';
     }
 
     return description;

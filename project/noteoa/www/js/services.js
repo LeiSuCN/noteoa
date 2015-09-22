@@ -16,6 +16,9 @@ angular.module('mwnoteoa.services', [])
   var dataUrlAddStore = '/index.php?r=mission/addstore'
   var dataUrlFinish = '/index.php?r=mission/finished'; // 完成任务
   var dataUrlCreateQuestion = '/index.php?r=question/build'; // 创建问题
+  var dataUrlGetQuestion = '/index.php?r=question/getlist'; // 查询问题
+
+  var dataUrlUpdateRecord = '/index.php?r=record/toupdate'; // 更新工作日志
 
   // 内部变量，用来在controller中共享变量
   var _shares = {};
@@ -31,6 +34,18 @@ angular.module('mwnoteoa.services', [])
       name: '维护',
       id: '1'
     }
+  }
+
+  function postAndCallback( url, params, callback ){
+    $http.post( url, params )
+    .then(
+      function( resp ){
+        // 回调结果
+        if( callback )
+          callback( resp.status, resp.statusText, resp.data );
+      },
+      function( resp ){ console.error( resp ) }
+    );
   }
 
   function setTodayTasksView( viewFunc ){
@@ -125,26 +140,20 @@ angular.module('mwnoteoa.services', [])
     );
   }
 
+  // 更新问题记录
+  function updateRecord(record, callback){
+    postAndCallback(MWCONFIG.server + dataUrlUpdateRecord, record, callback);
+  }
+
   // 创建问题
   function createQuestion(question, callback){
-
-    var url = MWCONFIG.server + dataUrlCreateQuestion;
-
-    $http.post( url, question )
-    .then(
-      function( resp ){
-
-        // 缓存查询结果
-        var status = resp.status;
+    postAndCallback(MWCONFIG.server + dataUrlCreateQuestion, question, callback);
+  }
   
-        if( resp.status == 200 && resp.data){
-          //
-        }
-        // 回调结果
-        callback( resp );
-      },
-      function( resp ){ console.error( resp ) }
-    );
+  // 查询问题
+  function getQuestions(params, callback){
+
+    postAndCallback(MWCONFIG.server + dataUrlGetQuestion, params, callback)
 
   }
 
@@ -158,6 +167,8 @@ angular.module('mwnoteoa.services', [])
     return _shares[name];
   }
 
+
+
   return {
     taskTypes:taskTypes,
     setShareValue: setShareValue,
@@ -167,6 +178,8 @@ angular.module('mwnoteoa.services', [])
     createTask: createTask,
     updateTask: updateTask,
     createQuestion: createQuestion,
+    getQuestions: getQuestions,
+    updateRecord: updateRecord,
     setTodayTasksView: setTodayTasksView
   }
 
@@ -296,67 +309,41 @@ angular.module('mwnoteoa.services', [])
 // 个人管理
 .factory('User', function($http){
 
+  var dataUrlLogin = '/index.php?r=handler/login';
+
   var api = {};
 
-  var _me = {
-      id: 3,
-      name: '宿磊',
-      phone: '18124632649'
-  }
+  var _me = false;
 
   api.me = function(){
+
+    if( !_me ){
+      _me = JSON.parse( window.localStorage['me'] || '{}' );
+    }
+
     return _me;
   }
 
+  api.login = function( params, callback ){
+    $http.post( MWCONFIG.server + dataUrlLogin, params )
+    .then(
+      function( resp ){
+  
+        if( resp.status == 200 && resp.data){
+          //
+        }
+        // 回调结果
+        callback( resp );
+      },
+      function( resp ){ console.error( resp ) }
+    );
+  }
+
+  api.save = function(user){
+    _me = user;
+    window.localStorage['me'] = JSON.stringify( user );
+  }
 
   return api;
 })
-
-.factory('Chats', function() {
-  // Might use a resource here that returns a JSON array
-
-  // Some fake testing data
-  var chats = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'https://avatars3.githubusercontent.com/u/11214?v=3&s=460'
-  }, {
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'https://pbs.twimg.com/profile_images/479090794058379264/84TKj_qa.jpeg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'https://pbs.twimg.com/profile_images/598205061232103424/3j5HUXMY.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'https://pbs.twimg.com/profile_images/578237281384841216/R3ae1n61.png'
-  }];
-
-  return {
-    all: function() {
-      return chats;
-    },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
-    },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
-        }
-      }
-      return null;
-    }
-  };
-});
+;
