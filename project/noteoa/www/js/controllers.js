@@ -8,7 +8,35 @@ angular.module('mwnoteoa.controllers', ['ionic'])
   $scope.sumary1 = { done:0 };
   $scope.tasks1 = [];
 
-  $scope.todayTasks = [];
+  // 更新今日任务列表
+  function updateTodayTasksView( todayTasks ){
+
+    $scope.sumary0.done = 0;
+    $scope.tasks0.length = 0;
+    $scope.sumary1.done = 0;
+    $scope.tasks1.length = 0;
+
+    angular.forEach( todayTasks, function( task ){
+
+      var sumary, tasks;
+      if( task.type == '0' ){
+        sumary = $scope.sumary0;
+        tasks = $scope.tasks0;
+      } else if( task.type == '1' ){
+        sumary = $scope.sumary1;
+        tasks = $scope.tasks1;
+      }
+
+      if( task.mission_state == '0' ){
+        if( task.type == 0)
+          task.leaguer_name = '任务' + ( tasks.length - sumary.done + 1);
+        tasks.push( task );
+      } else{
+        sumary.done = sumary.done + 1;
+        tasks.splice(0,0, task );
+      }
+    });
+  }
 
   //
   $scope.toggle = function( code ){
@@ -31,31 +59,15 @@ angular.module('mwnoteoa.controllers', ['ionic'])
     var me = User.me();
     $ionicLoading.show({ template: '正在查询任务...' });
     Task.getTodayTasks({handlerId: me.id},function(resp){
-      $scope.todayTasks = resp;
-
-      // 
-      angular.forEach( resp, function( task ){
-
-        var sumary, tasks;
-        if( task.type == '0' ){
-          sumary = $scope.sumary0;
-          tasks = $scope.tasks0;
-        } else if( task.type == '1' ){
-          sumary = $scope.sumary1;
-          tasks = $scope.tasks1;
-        }
-
-        if( task.mission_state != '0' ){
-          sumary.done = sumary.done + 1;
-        }
-
-        tasks.push( task );
-      });
+      
+      updateTodayTasksView( resp );
 
       $ionicLoading.hide();
+      Task.setTodayTasksView( updateTodayTasksView );
     });
-
   }
+
+  Task.setShareValue('TaskCtrl.scope.tasks1', $scope.tasks1);
 
   $scope.getTodayTasks();
 
@@ -189,6 +201,7 @@ angular.module('mwnoteoa.controllers', ['ionic'])
 
   // 已经添加过的门店
   var addedStores = Task.getShareValue('task-stores');
+  var choosedStores = Task.getShareValue('TaskCtrl.scope.tasks1');
 
   // 更新门店列表
   $scope.stores = [];
@@ -199,10 +212,19 @@ angular.module('mwnoteoa.controllers', ['ionic'])
       cStore.id = store.id;
       cStore.leaguer_name = store.leaguer_name;
       cStore.boss_phone = store.boss_phone;
+      cStore.area_id = store.area_id;
       cStore.address = store.address;
       cStore.checked = false;
+      // 已经添加的门店不再选取
       for( var i = 0 ; i < addedStores.length ; i++ ){
         if( addedStores[i].id == cStore.id ){
+          cStore.checked = true;
+          break;
+        }
+      }
+      // 已经生成任务的门店不在选取
+      for( var i = 0 ; i < choosedStores.length ; i++ ){
+        if( choosedStores[i].leaguer_id == cStore.id ){
           cStore.checked = true;
           break;
         }
@@ -212,8 +234,6 @@ angular.module('mwnoteoa.controllers', ['ionic'])
         $scope.stores.push( cStore );
       }
     });
-
-    // 已经选过的门店不再选取
   });
 
   $scope.confirm = function(){

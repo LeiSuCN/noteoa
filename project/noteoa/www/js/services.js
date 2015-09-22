@@ -20,6 +20,7 @@ angular.module('mwnoteoa.services', [])
   // 内部变量，用来在controller中共享变量
   var _shares = {};
   var _todayTasks = [];
+  var _todayTasksView = false;
 
   var taskTypes = {
     '0': {
@@ -30,6 +31,10 @@ angular.module('mwnoteoa.services', [])
       name: '维护',
       id: '1'
     }
+  }
+
+  function setTodayTasksView( viewFunc ){
+    _todayTasksView = viewFunc;
   }
 
   // 获取任务列表
@@ -47,6 +52,12 @@ angular.module('mwnoteoa.services', [])
             _todayTasks.push( task );
           })
         }
+
+        // 更新视图
+        if( _todayTasksView ){
+          _todayTasksView( _todayTasks );
+        }
+
         // 回调结果
         if( callback )
           callback( _todayTasks );
@@ -155,7 +166,8 @@ angular.module('mwnoteoa.services', [])
     getTodayTask: getTodayTask,
     createTask: createTask,
     updateTask: updateTask,
-    createQuestion: createQuestion
+    createQuestion: createQuestion,
+    setTodayTasksView: setTodayTasksView
   }
 
 })

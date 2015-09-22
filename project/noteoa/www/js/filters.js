@@ -33,9 +33,10 @@ angular.module('mwnoteoa.filters', ['mwnoteoa.services'])
     description += type ? type.name : '';
 
     // 门店名称
-    if( type.id == '1' || task.mission_state == '1' ){
-      description += ' ' + task.leaguer_name;
-    }
+    description += ' ' + task.leaguer_name;
+    //if( type.id == '1' || task.mission_state == '1' ){
+    //  description += ' ' + task.leaguer_name;
+    //}
 
     // 完成时间
     if( task.mission_state == '1' ){
@@ -43,5 +44,24 @@ angular.module('mwnoteoa.filters', ['mwnoteoa.services'])
     }
 
     return description;
+  }
+})
+// 区域
+.filter('areaid2name', function() {
+
+  return function(areaId){
+    var areaName = '';
+
+    switch( areaId ){
+      case "440300001": areaName = "宝安"; break;
+      case "440300002": areaName = "南山"; break;
+      case "440300003": areaName = "福田"; break;
+      case "440300004": areaName = "龙岗"; break;
+      case "440300005": areaName = "罗湖"; break;
+      case "440300006": areaName = "龙华"; break;
+      default: areaName = '';
+    }
+
+    return areaName;
   }
 })
