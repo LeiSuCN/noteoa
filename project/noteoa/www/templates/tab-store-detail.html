@@ -35,14 +35,48 @@
   			<input type="text" name="">
   		</label>
   		<!-- 开业时间 -->
-   		<label class="item item-input item-stacked-label">
+   		<label class="item item-input item-select item-stacked-label">
   			<span class="input-label">开业时间</span>
-  			<input type="text" name="opening_time" ng-model="store.opening_time">
+        <select ng-model="store.opening_time">
+          <option value="00:00">00:00</option>
+          <option value="01:00">01:00</option>
+          <option value="02:00">02:00</option>
+          <option value="03:00">03:00</option>
+          <option value="04:00">04:00</option>
+          <option value="05:00">05:00</option>
+          <option value="06:00">06:00</option>
+          <option value="07:00">07:00</option>
+          <option value="08:00">08:00</option>
+          <option value="09:00">09:00</option>
+          <option value="10:00">10:00</option>
+          <option value="11:00">11:00</option>
+          <option value="12:00">12:00</option>
+          <option value="13:00">13:00</option>
+          <option value="14:00">14:00</option>
+          <option value="15:00">15:00</option>
+          <option value="16:00">16:00</option>
+          <option value="17:00">17:00</option>
+          <option value="18:00">18:00</option>
+          <option value="19:00">19:00</option>
+          <option value="20:00">20:00</option>
+          <option value="21:00">21:00</option>
+          <option value="22:00">22:00</option>
+          <option value="23:00">23:00</option>
+        </select>
   		</label>
- 		<!-- 门店主营业务 -->
-  		<label class="item item-input item-stacked-label">
+ 		  <!-- 门店主营业务 -->
+  		<label class="item item-input item-select item-stacked-label">
   			<span class="input-label">门店主营业务</span>
-  			<input type="text" name="major_business" ng-model="store.major_business">
+        <select ng-model="store.major_business">
+          <option value="0">便民商店/便利店</option>
+          <option value="1">服装鞋帽皮具店</option>
+          <option value="2">儿童用品店</option>
+          <option value="3">礼品饰品店</option>
+          <option value="4">烟酒专卖店</option>
+          <option value="5">手机销售/数码销售</option>
+          <option value="6">文化用品</option>
+          <option value="99">其他</option>
+        </select>
   		</label>
 
   		<!-- 门店周边环境 -->
@@ -50,30 +84,46 @@
   		<!-- 门店周边环境 -->
   		<label class="item item-input item-select item-stacked-label">
   			<span class="input-label">门店周边环境</span>
-  			<select>
-  				<option value="">CBD</option>
-  				<option value="">商业住宅区</option>
-  				<option value="">城中村</option>
-  				<option value="">其他</option>
-  			</select>
+        <select ng-model="store.around_type">
+          <option value="0">城中村</option>
+          <option value="1">商业小区</option>
+          <option value="2">CBD</option>
+        </select>
   		</label>
   		<!-- 辐射人群消费力 -->
-  		<label class="item item-input item-stacked-label">
+  		<label class="item item-input item-select item-stacked-label">
   			<span class="input-label">辐射人群消费力</span>
-  			<input type="text" name="avg_spending" ng-model="store.avg_spending">
+        <select ng-model="store.avg_spending">
+          <option value="0">50～1000</option>
+          <option value="1">100～200</option>
+          <option value="2">200～500</option>
+          <option value="3">500元以上</option>
+        </select>
   		</label>
   		<!-- 辐射人流量（人／天） -->
-  		<label class="item item-input item-stacked-label">
+  		<label class="item item-input input-select item-stacked-label">
   			<span class="input-label">辐射人流量（人／天）</span>
-  			<input type="text" name="avg_person_day" ng-model="store.avg_person_day">
+        <select ng-model="store.avg_person_day">
+          <option value="0">500～1000</option>
+          <option value="1">1000～2000</option>
+          <option value="2">2000～5000</option>
+          <option value="3">5000～20000</option>
+          <option value="4">20000人以上</option>
+        </select>
   		</label>
 
   		<!-- 门店硬件实力 -->
   		<div class="item item-divider item-positive">门店硬件实力</div>
   		<!-- 门店面积 -->
-  		<label class="item item-input item-stacked-label">
+  		<label class="item item-input item-select item-stacked-label">
   			<span class="input-label">门店面积</span>
-  			<input type="text" name="store_acreage" ng-model="store.store_acreage">
+        <select ng-model="store.store_acreage">
+          <option value="0">10平以下</option>
+          <option value="1">10～20平</option>
+          <option value="2">20～30平</option>
+          <option value="3">30～50平</option>
+          <option value="4">50平以上</option>
+        </select>        
   		</label>
   		<!-- 店内设施 -->
   		<label class="item item-input item-stacked-label">
@@ -81,33 +131,55 @@
   			<input type="text" name="store_equipment" ng-model="store.store_equipment">
   		</label>
   		<!-- 存放面积 -->
-  		<label class="item item-input item-stacked-label">
+  		<label class="item item-input item-select item-stacked-label">
   			<span class="input-label">存放面积</span>
-  			<input type="text" name="house_acreage" ng-model="store.house_acreage">
+        <select ng-model="store.house_acreage">
+          <option value="0">10平以下</option>
+          <option value="1">10～20平</option>
+          <option value="2">20～30平</option>
+          <option value="3">30～50平</option>
+          <option value="4">50平以上</option>
+        </select>
   		</label>
   		<!-- 门店经营人数 -->
-  		<label class="item item-input item-stacked-label">
+  		<label class="item item-input item-select item-stacked-label">
   			<span class="input-label">门店经营人数</span>
-  			<input type="text" name="store_member_num" ng-model="store.store_member_num">
+        <select ng-model="store.store_member_num">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
   		</label>
   		<!-- 年龄段 -->
-  		<label class="item item-input item-stacked-label">
+  		<label class="item item-input item-select item-stacked-label">
   			<span class="input-label">年龄段</span>
-  			<input type="text" name="store_member_age" ng-model="store.store_member_age">
+        <select ng-model="store.store_member_age">
+          <option value="0">20岁以下</option>
+          <option value="1">20～30岁</option>
+          <option value="2">30～40岁</option>
+          <option value="3">41～50岁</option>
+          <option value="4">50岁以上</option>
+        </select>
   		</label>
   		<!-- 老板是否参与 -->
-  		<label class="item item-input item-stacked-label">
+  		<label class="item item-input item-select item-stacked-label">
   			<span class="input-label">老板是否参与</span>
-  			<input type="text" name="boss_in" ng-model="store.boss_in">
+        <select ng-model="store.boss_in">
+          <option value="0">否</option>
+          <option value="1">是</option>
+        </select>
   		</label>
 
   		<!-- 门店软件实力 -->
   		<div class="item item-divider item-positive">门店软件实力</div>
-  		<!-- 加入猫屋时间 -->
+  		<!-- 加入猫屋时间 
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">加入猫屋时间</span>
   			<input type="text" name="create_date" ng-model="store.create_date">
   		</label>
+      -->
   		<!-- 进店人流量 -->
    		<label class="item item-input item-stacked-label">
   			<span class="input-label">进店人流量</span>
@@ -131,9 +203,15 @@
   		<!-- 老板画像 -->
   		<div class="item item-divider item-positive">老板画像</div>
   		<!-- 年龄 -->
-  		<label class="item item-input item-stacked-label">
+  		<label class="item item-input item-select item-stacked-label">
   			<span class="input-label">年龄</span>
-  			<input type="text" name="boss_age" ng-model="store.boss_age">
+        <select ng-model="store.boss_age">
+          <option value="0">20岁以下</option>
+          <option value="1">20～30岁</option>
+          <option value="2">30～40岁</option>
+          <option value="3">41～50岁</option>
+          <option value="4">50岁以上</option>
+        </select>
   		</label>
   		<!-- 家庭成员 -->
   		<label class="item item-input item-stacked-label">
@@ -141,19 +219,19 @@
   			<input type="text" name="boss_home_member" ng-model="store.boss_home_member">
   		</label>
   		<!-- 互联网意识 -->
-  		<label class="item item-input item-stacked-label">
-  			<span class="input-label">互联网意识</span>
-  			<input type="text" name="boss_net_feel" ng-model="store.boss_net_feel">
+  		<label class="item item-input item-select item-stacked-label">
+  			<span class="input-label">手机型号</span>
+        <select ng-model="store.boss_net_feel">
+          <option value="0">使用非智能手机</option>
+          <option value="1">使用（安卓／苹果）手机</option>
+          <option value="2">会基本电脑操作</option>
+          <option value="3">网络达人</option>
+        </select>
   		</label>
   		<!-- 微信号 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">微信号</span>
   			<input type="text" name="boss_wechat" ng-model="store.boss_wechat">
-  		</label>
-  		<!-- 拓展员备注 -->
-  		<label class="item item-input item-stacked-label">
-  			<span class="input-label">拓展员备注</span>
-  			<input type="text" name="info" ng-model="store.info">
   		</label>
 
   	</form> 

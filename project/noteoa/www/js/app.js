@@ -109,6 +109,18 @@ angular.module('mwnoteoa', ['ionic', 'mwnoteoa.controllers', 'mwnoteoa.services'
       }
     }
   })
+
+  // 门店查询 - 区域选择
+  .state('tab.store-area', { 
+    url: '/store-area',
+    views: {
+      'tab-store': {
+        templateUrl: 'templates/tab-store-area-select.html',
+        controller: 'StoreAreaCtrl'
+      }
+    }
+  })
+   
   .state('tab.store-detail', { // 门店查询－详情
     url: '/store/:storeId',
     views: {

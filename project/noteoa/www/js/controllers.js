@@ -61,8 +61,6 @@ angular.module('mwnoteoa.controllers', ['ionic'])
     var me = User.me();
     $ionicLoading.show({ template: '正在查询任务...' });
     Task.getTodayTasks({handlerId: me.id},function(resp){
-      
-      console.log( resp )
 
       updateTodayTasksView( resp );
 
@@ -259,8 +257,18 @@ angular.module('mwnoteoa.controllers', ['ionic'])
   }
 })
 
-// 工作管理 - 任务详情
-.controller('TaskDetailCtrl', function($scope, $stateParams,$ionicHistory, $ionicPopup,  $ionicLoading, Task, User) {
+//
+// ======== ======== ======== ========>> 查看&提交管理 <<======== ======== ======== ========
+//
+.controller('TaskDetailCtrl', function($scope, $stateParams,$ionicHistory, $ionicPopup,  $ionicLoading, Task, Store, User) {
+  
+  $scope.hideMain = true;
+  $scope.hideEnv = true;
+  $scope.hideHard = true;
+  $scope.hideBose = true;
+
+  $scope.hideQuestions = true;
+
   var _task = Task.getTodayTask( $stateParams.taskId );
 
   if( _task.type == '0' && _task.mission_state == '0' )_task.leaguer_name = '';
@@ -297,6 +305,9 @@ angular.module('mwnoteoa.controllers', ['ionic'])
     $scope.task.questions.push( question );
   }
 
+  /**
+   * 提交任务
+   */
   $scope.submit = function(){
 
     var task = $scope.task;
@@ -308,7 +319,7 @@ angular.module('mwnoteoa.controllers', ['ionic'])
       var updateRecord = false;
 
       // 更新工作日志
-      if( task.record != _task.record.content ){
+      if( _task.type == '1' && task.record != _task.record.content ){
         updateRecord = { recordId:_task.record.recordId, content:task.record}
         updateCount = updateCount + 1;
       }
@@ -419,7 +430,6 @@ angular.module('mwnoteoa.controllers', ['ionic'])
 
   // 获取问题列表
   Task.getQuestions({handlerId: me.id, missionId: _task.id }, function(code, msg, data){
-    console.log( data );
     if( data && data.length > 0 ){
       $scope.task.questions.length = 0;
       angular.forEach( data, function(question){
@@ -427,6 +437,51 @@ angular.module('mwnoteoa.controllers', ['ionic'])
       });      
     }
   });
+
+  // 如果任务为拓展任务且任务状态为提交状态
+  // 则需要获取任务信息
+  if( _task.type == '0' || _task.status == '1' ){
+
+    Store.getOne( _task.leaguer_id,function(data){
+      console.log( data )
+      data = data[0];
+      // 门店地理位置
+      //$scope.task.
+      // 入口位置
+      $scope.task.faceSide = data.face_side;
+      // 开业时间
+      $scope.task.openDate = data.open_date;
+      // 门店主营业务
+      $scope.task.majorBusiness = data.major_business;
+      // 门店周边环境
+      $scope.task.aroundType = data.around_type;
+      // 辐射人群消费水平
+      $scope.task.avgSpending = data.avg_spending;
+      // 辐射人流量（人／天）
+      $scope.task.avgPersonAround = data.avg_person_around;
+      // 门店面积
+      $scope.task.storeAcreage = data.store_acreage;
+      // 店内设施
+      $scope.task.storeEquipment = data.store_equipment;
+      // 存放面积
+      $scope.task.houseAcreage = data.house_acreage;
+      // 门店经营人数
+      $scope.task.storeMemberNum = data.store_member_num;
+      // 年龄段
+      $scope.task.storeMemberAge = data.store_member_age;
+      // 老板是否参与
+      $scope.task.bossIn = data.boss_in;
+      // 年龄
+      $scope.task.bossAge = data.boss_age;
+      // 家庭成员
+      $scope.task.bossHomeMember = data.boss_home_member;
+      // 手机型号
+      $scope.task.boss_phone = data.bossPhone;
+      // 微信号
+      $scope.task.bossWechat = data.boss_wechat;
+    }, true);
+
+  }
 })
 
 // 工作管理 - 任务详情 - 问题反馈
@@ -457,11 +512,12 @@ angular.module('mwnoteoa.controllers', ['ionic'])
 })
 
 // 门店查询
-.controller('StoreCtrl', function($scope, Store, User) {
+.controller('StoreCtrl', function($scope,$state, Store, User) {
 
   var me = User.me();
 
-  $scope.queryCondition = { leaguerName: '', areaId:'9000000', handlerId: me.id };
+  $scope.queryCondition = { leaguerName: '', areaId:'900000', areaName: '', handlerId: me.id };
+  Store.share.leaguerSearchCondition = $scope.queryCondition;
 
   var templateStoreListItem = angular.element('#template_store_list_item').html();
 
@@ -478,12 +534,95 @@ angular.module('mwnoteoa.controllers', ['ionic'])
     eleStoreList.append( storeEles );
   }
 
+  $scope.gotoSelect = function(){
+    $state.go( 'tab.store-area')
+  }
+
   $scope.search = function(){
     Store.search( $scope.queryCondition, function(resp){
       updateStoreListView( resp );
     });
   }
 
+})
+
+//
+// 门店查询 - 区域选择
+// 
+.controller('StoreAreaCtrl', function($scope, $ionicHistory, Store) {
+  $scope.area = 'ba';
+
+  $scope.areas = [
+    { id: '440301001', name: '宝安区大浪街道', cate: 'ba' },
+    { id: '440301002', name: '宝安区福永街道', cate: 'ba' },     
+    { id: '440301003', name: '宝安区龙华街道', cate: 'ba' },     
+    { id: '440301004', name: '宝安区明治街道', cate: 'ba' },     
+    { id: '440301005', name: '宝安区沙井街道', cate: 'ba' },     
+    { id: '440301006', name: '宝安区石岩街道', cate: 'ba' },     
+    { id: '440301007', name: '宝安区西乡街道', cate: 'ba' },     
+    { id: '440301008', name: '宝安区新安街道', cate: 'ba' }, 
+
+    { id: '440302001', name: '福田区福保街道', cate: 'ft' },   
+    { id: '440302002', name: '福田区福田保税区', cate: 'ft' },    
+    { id: '440302003', name: '福田区福田街道', cate: 'ft' },      
+    { id: '440302004', name: '福田区华富街道', cate: 'ft' },      
+    { id: '440302005', name: '福田区梅林街道', cate: 'ft' },      
+    { id: '440302006', name: '福田区南园街道', cate: 'ft' },      
+    { id: '440302007', name: '福田区沙头街道', cate: 'ft' },      
+    { id: '440302009', name: '福田区香蜜湖街道', cate: 'ft' },    
+    { id: '440302010', name: '福田区园岭街道', cate: 'ft' }, 
+
+    { id: '440303001', name: '龙岗区坂田街道', cate: 'lg' },      
+    { id: '440303002', name: '龙岗区布吉街道', cate: 'lg' },      
+    { id: '440303003', name: '龙岗区坑梓街道', cate: 'lg' },      
+    { id: '440303004', name: '龙岗区南湾街道', cate: 'lg' },      
+    { id: '440303005', name: '龙岗区平湖街道', cate: 'lg' },      
+    { id: '440303006', name: '龙岗区横岗街道', cate: 'lg' },      
+    { id: '440303007', name: '龙岗区龙城街道', cate: 'lg' },      
+    { id: '440303008', name: '龙岗区龙岗街道', cate: 'lg' }, 
+
+    { id: '440304001', name: '龙华新区', cate: 'lhx' },           
+    { id: '440304002', name: '龙华新区民治街道', cate: 'lhx' }, 
+
+    { id: '440305001', name: '罗湖区翠竹街道', cate: 'lh' },     
+    { id: '440305002', name: '罗湖区东湖街道', cate: 'lh' },     
+    { id: '440305003', name: '罗湖区黄贝街道', cate: 'lh' },     
+    { id: '440305004', name: '罗湖区东晓街道', cate: 'lh' },     
+    { id: '440305005', name: '罗湖区清水河街道', cate: 'lh' },   
+    { id: '440305006', name: '罗湖区桂园街道', cate: 'lh' },     
+    { id: '440305007', name: '罗湖区东门街道', cate: 'lh' },     
+    { id: '440305008', name: '罗湖区莲塘街道', cate: 'lh' },     
+    { id: '440305009', name: '罗湖区南湖街道', cate: 'lh' },     
+    { id: '440305010', name: '罗湖区笋岗街道', cate: 'lh' },  
+
+    { id: '440306001', name: '南山区南山街道', cate: 'ns' },      
+    { id: '440306002', name: '南山区南头街道', cate: 'ns' },      
+    { id: '440306003', name: '南山区蛇口街道', cate: 'ns' },      
+    { id: '440306004', name: '南山区粤海街道', cate: 'ns' },      
+    { id: '440306005', name: '南山区招商街道', cate: 'ns' },      
+    { id: '440306006', name: '南山区沙河街道', cate: 'ns' },      
+    { id: '440306007', name: '南山区桃源街道', cate: 'ns' },      
+    { id: '440306008', name: '南山区西丽街道', cate: 'ns' }
+
+  ];
+
+
+  $scope.result = { selected: $scope.areas[0].id };
+
+
+  $scope.submit = function(){
+    if( Store.share.leaguerSearchCondition ){
+      for( var i = 0 ; i < $scope.areas.length; i++ ){
+        var strea = $scope.areas[i];
+        if( strea.id == $scope.result.selected ){
+          Store.share.leaguerSearchCondition.areaId = strea.id;
+          Store.share.leaguerSearchCondition.areaName = strea.name;
+          break;
+        }
+      }
+    }
+    $ionicHistory.goBack();
+  }
 })
 
 // 门店详情

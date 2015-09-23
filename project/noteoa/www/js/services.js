@@ -5,7 +5,9 @@ top.window.MWCONFIG = top.window.MWCONFIG || {
 
 angular.module('mwnoteoa.services', [])
 
-// 任务管理
+//
+// ======== ======== ======== ========>> 任务管理 <<======== ======== ======== ========
+//
 .factory('Task', function($http){
 
   //
@@ -185,8 +187,12 @@ angular.module('mwnoteoa.services', [])
 
 })
 
-// 门店管理
+//
+// ======== ======== ======== ========>> 门店管理 <<======== ======== ======== ========
+//
 .factory('Store', function($http){
+
+  var share = {};
 
   //
   console.log( 'mwnoteoa.services.Store service is initializing...' );
@@ -198,6 +204,22 @@ angular.module('mwnoteoa.services', [])
 
   var _cache_all_stores = false; // 缓存全部门店数据
   var _cache_stores = false; // 缓存数据 
+
+
+  /*
+   * post请求 
+   */
+  function postAndCallback( url, params, callback ){
+    $http.post( url, params )
+    .then(
+      function( resp ){
+        // 回调结果
+        if( callback )
+          callback( resp.status, resp.statusText, resp.data );
+      },
+      function( resp ){ console.error( resp ) }
+    );
+  }
 
 
   function search( params, callback ){
@@ -257,14 +279,26 @@ angular.module('mwnoteoa.services', [])
     );
   }
 
-  // 只获取一个门店信息
-  function getOne(storeId, callback){
+  /*
+   * 只获取一个门店信息
+   * @param storeId  门店ID 
+   * @param callback 回调函数
+   * @param force    是否强迫刷新
+   */ 
+  function getOne(storeId, callback, force){
 
-    // 先从缓存中获取
-    var store = _cache_stores[storeId]; 
-    if( store ){
-      callback( store );
+    // 非强迫刷新时，先尝试从缓存中获取
+    if( !force ){
+      var store = _cache_stores[storeId]; 
+      if( store ){
+        callback( store );
+        return;
+      }
     }
+
+    postAndCallback( MWCONFIG.server + dataUrlList, {leaguerId: storeId}, function(status, msg, data){
+      callback( data )
+    })
   }
 
   // 保存门店信息
@@ -298,6 +332,7 @@ angular.module('mwnoteoa.services', [])
   }
 
   return {
+    share: share,
     search: search,
     getOne: getOne,
     getAll: getAll,
@@ -346,4 +381,20 @@ angular.module('mwnoteoa.services', [])
 
   return api;
 })
+// * * * * * * * *
+// 所有元数据信息
+//     by sulei@2015-09-23 12:20
+// * * * * * * * *
+.factory('MwModel', function(){
+  // 对外接口
+  var api = {};
+
+  // 任务类型
+  var _taskType = { '0' : { name:'拓展', id:'0' }, '1': { name:'维护', id:'1' } };
+  api.TaskType = _taskType;
+
+
+  return api;
+})
+
 ;

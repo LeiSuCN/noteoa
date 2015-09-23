@@ -1,0 +1,51 @@
+<style type="text/css">
+.button-area{ position: fixed; top: 0px; left: 0; z-index: 10; }
+.button{ margin: .2em; min-height: 32px; line-height: 32px; }
+</style>
+<ion-view view-title="番茄辣椒">
+
+  <ion-nav-buttons side="right">
+    <button class="button button-clear" style="color:white;" ng-click ="submit()">确认</button>  
+  </ion-nav-buttons>
+
+  <ion-content overflow-scroll="true">
+    <div class="bar bar-header">
+      <button class="button" ng-class=" {true: 'button-balanced', false:'button-calm'} [area == 'ba']"
+        ng-click="area = 'ba'">
+        宝安
+      </button>
+      <button class="button" ng-class=" {true: 'button-balanced', false:'button-calm'} [area == 'ft']"
+        ng-click="area = 'ft'">
+        福田
+      </button>
+      <button class="button" ng-class=" {true: 'button-balanced', false:'button-calm'} [area == 'lg']"
+        ng-click="area = 'lg'">
+        龙岗
+      </button>
+      <button class="button" ng-class=" {true: 'button-balanced', false:'button-calm'} [area == 'lhx']"
+        ng-click="area = 'lhx'">
+        龙华
+      </button>
+      <button class="button" ng-class=" {true: 'button-balanced', false:'button-calm'} [area == 'lh']"
+        ng-click="area = 'lh'">
+        罗湖
+      </button>
+      <br>
+      <button class="button" ng-class=" {true: 'button-balanced', false:'button-calm'} [area == 'ns']"
+        ng-click="area = 'ns'">
+        南山
+      </button>
+    </div>
+
+    <div class="list" style="padding-top: 50px;">
+      <label class="item item-radio" ng-repeat="strea in areas" ng-show="area == strea.cate">
+        <input type="radio" name="group" value="{{strea.id}}" ng-model="result.selected">
+        <div class="item-content">
+          {{strea.name}}
+        </div>
+        <i class="radio-icon ion-checkmark balanced"></i>
+      </label>
+    </div>
+
+  </ion-content>
+</ion-view>

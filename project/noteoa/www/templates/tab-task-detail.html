@@ -1,16 +1,21 @@
 <style type="text/css">
-.item-select select{
-  right: auto;
-  padding: 0 48px 0 0px;
+.task_detail_store_card .input-label { }
+.task_detail_store_card .item-select select{
+  padding: 0 44px 0 0px;
 }
+.task_detail_store_card .item-input input{
+  text-align: right;
+}
+
+.task_detail_store_card .list{ padding-right: 0px;}
 </style>
 <ion-view view-title="番茄辣椒">
 
   <ion-nav-buttons side="right">
-    <button id="task_detail_btn_submit" class="button button-clear button-dark" ng-click ="submit()">提交</button>  
+    <button id="task_detail_btn_submit" class="button button-clear" style="color:white;" ng-click ="submit()">提交</button>  
   </ion-nav-buttons>
 
-  <ion-content>
+  <ion-content overflow-scroll="true">
 
     <div class="list">
       <label class="item item-input">
@@ -40,34 +45,237 @@
         <span class="input-label">门店地址</span>
         <input type="text" ng-model="task.address"> 
       </label>
-
-      <div class="card ng-hide"  ng-hide="task.type == 0">
-        <div class="item item-divider item-icon-right">
-          维护记录
-        </div>  
-        <div class="item" style="padding: 0; ">
-          <textarea name="" style="width: 100%; height: 4em;" maxlength="50" ng-model="task.record"></textarea>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="item item-divider item-icon-right" ng-click="toggleQuestionList()">
-          问题列表
-          <i class="icon ion-ios-arrow-down" id="qustionListArrow"></i>
-        </div>
-        <div class="item list" id="question_list" style=" padding-right: 0px; ">
-          <div class="item" ng-repeat=" question in task.questions">
-            问题{{$index + 1}}:
-            <textarea name="" style="width:100%; " maxlength="40" ng-model="question.question_title"></textarea>
-          </div>
-          <div class="item" style="text-align: center; padding: 0px; ">
-            <a class="button button-icon icon ion-ios-plus positive" href="javascript:void(0)" ng-click="addQuestion()"></a>
-          </div>
-        </div>
-      </div>
-
-
     </div>
- 
+
+    <div class="card list"  ng-hide="task.type == 0">
+      <div class="item item-divider item-icon-right item-positive">
+        维护记录
+      </div>  
+      <div class="item" style="padding: 0; ">
+        <textarea name="" style="width: 100%; height: 4em;" maxlength="50" ng-model="task.record"></textarea>
+      </div>
+    </div>
+
+
+    <div class="card list task_detail_store_card" ng-hide="task.type != 0">
+      <div class="item item-divider item-icon-right item-positive" ng-click="hideMain = !hideMain">
+        门店信息<i class="icon" ng-class="{ true: 'ion-ios-arrow-right', false:'ion-ios-arrow-down'}[hideMain]"></i>
+      </div>
+      <div class="item list" ng-hide="hideMain">
+      <!-- 门店地理位置 -->
+      <label class="item item-input">
+        <span class="input-label">门店地理位置</span>
+        <input type="text" name="address" ng-model="store.address">
+      </label>
+      <!-- 入口位置 -->
+      <label class="item item-input">
+        <span class="input-label">入口位置</span>
+        <input type="text" ng-model="task.faceSide">
+      </label>
+      <!-- 开业时间 -->
+      <label class="item item-input  item-select">
+        <span class="input-label">开业时间</span>
+        <select ng-model="task.openDate">
+          <option value="00:00">00:00</option>
+          <option value="01:00">01:00</option>
+          <option value="02:00">02:00</option>
+          <option value="03:00">03:00</option>
+          <option value="04:00">04:00</option>
+          <option value="05:00">05:00</option>
+          <option value="06:00">06:00</option>
+          <option value="07:00">07:00</option>
+          <option value="08:00">08:00</option>
+          <option value="09:00">09:00</option>
+          <option value="10:00">10:00</option>
+          <option value="11:00">11:00</option>
+          <option value="12:00">12:00</option>
+          <option value="13:00">13:00</option>
+          <option value="14:00">14:00</option>
+          <option value="15:00">15:00</option>
+          <option value="16:00">16:00</option>
+          <option value="17:00">17:00</option>
+          <option value="18:00">18:00</option>
+          <option value="19:00">19:00</option>
+          <option value="20:00">20:00</option>
+          <option value="21:00">21:00</option>
+          <option value="22:00">22:00</option>
+          <option value="23:00">23:00</option>
+        </select>
+      </label>
+      <!-- 门店主营业务 -->
+      <label class="item item-input item-select">
+        <span class="input-label">门店主营业务</span>
+        <select ng-model="task.majorBusiness">
+          <option value="0">便民商店/便利店</option>
+          <option value="1">服装鞋帽皮具店</option>
+          <option value="2">儿童用品店</option>
+          <option value="3">礼品饰品店</option>
+          <option value="4">烟酒专卖店</option>
+          <option value="5">手机销售/数码销售</option>
+          <option value="6">文化用品</option>
+          <option value="99">其他</option>
+        </select>
+      </label>
+      </div>
+    </div>
+
+    <div class="card list task_detail_store_card"  ng-hide="task.type != 0">
+      <div class="item item-divider item-icon-right item-positive" ng-click="hideEnv = !hideEnv">
+        门店周边环境<i class="icon" ng-class="{ true: 'ion-ios-arrow-right', false:'ion-ios-arrow-down'}[hideEnv]"></i>
+      </div>
+      <div class="item list" ng-hide="hideEnv">
+      <!-- 门店地理位置 -->
+      <label class="item item-input item-select">
+        <span class="input-label">门店周边环境</span>
+        <select ng-model="task.aroundType">
+          <option value="0">城中村</option>
+          <option value="1">商业小区</option>
+          <option value="2">CBD</option>
+        </select>
+      </label>
+      <!-- 辐射人群消费力 -->
+      <label class="item item-input item-select">
+        <span class="input-label">辐射人群消费水平</span>
+        <select ng-model="task.avgSpending">
+          <option value="0">50～1000</option>
+          <option value="1">100～200</option>
+          <option value="2">200～500</option>
+          <option value="3">500元以上</option>
+        </select>
+      </label>
+      <!-- 辐射人流量（人／天） -->
+      <label class="item item-input item-select">
+        <span class="input-label">辐射人流量（人／天）</span>
+        <select ng-model="task.avgPersonAround">
+          <option value="0">500～1000</option>
+          <option value="1">1000～2000</option>
+          <option value="2">2000～5000</option>
+          <option value="3">5000～20000</option>
+          <option value="4">20000人以上</option>
+        </select>
+      </label>
+      </div> 
+    </div>
+
+    <div class="card list task_detail_store_card"  ng-hide="task.type != 0">
+      <div class="item item-divider item-icon-right item-positive" ng-click="hideHard = !hideHard">
+        门店硬件实力<i class="icon" ng-class="{ true: 'ion-ios-arrow-right', false:'ion-ios-arrow-down'}[hideHard]"></i>
+      </div>
+      <div class="item list" ng-hide="hideHard">
+      <!-- 门店面积 -->
+      <label class="item item-input item-select">
+        <span class="input-label">门店面积</span>
+        <select ng-model="task.storeAcreage">
+          <option value="0">10平以下</option>
+          <option value="1">10～20平</option>
+          <option value="2">20～30平</option>
+          <option value="3">30～50平</option>
+          <option value="4">50平以上</option>
+        </select>
+      </label>
+      <!-- 店内设施 -->
+      <label class="item item-input">
+        <span class="input-label">店内设施</span>
+        <input type="text" ng-model="task.storeEquipment">
+      </label>
+      <!-- 存放面积 -->
+      <label class="item item-input item-select">
+        <span class="input-label">存放面积</span>
+        <select ng-model="task.houseAcreage">
+          <option value="0">10平以下</option>
+          <option value="1">10～20平</option>
+          <option value="2">20～30平</option>
+          <option value="3">30～50平</option>
+          <option value="4">50平以上</option>
+        </select>
+      </label>
+      <!-- 门店经营人数 -->
+      <label class="item item-input item-select">
+        <span class="input-label">门店经营人数</span>
+        <select ng-model="task.storeMemberNum">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </label>
+      <!-- 年龄段 -->
+      <label class="item item-input item-select">
+        <span class="input-label">年龄段</span>
+        <select ng-model="task.storeMemberAge">
+          <option value="0">20岁以下</option>
+          <option value="1">20～30岁</option>
+          <option value="2">30～40岁</option>
+          <option value="3">41～50岁</option>
+          <option value="4">50岁以上</option>
+        </select>
+      </label>
+      <!-- 老板是否参与 -->
+      <label class="item item-input item-select">
+        <span class="input-label">老板是否参与</span>
+        <select ng-model="task.bossIn">
+          <option value="0">否</option>
+          <option value="1">是</option>
+        </select>
+      </label>  
+      </div>
+    </div>
+
+    <div class="card list task_detail_store_card"  ng-hide="task.type != 0">
+      <div class="item item-divider item-icon-right item-positive" ng-click="hideBose = !hideBose">
+        老板画像<i class="icon" ng-class="{ true: 'ion-ios-arrow-right', false:'ion-ios-arrow-down'}[hideBose]"></i>
+      </div>
+      <div class="item list" ng-hide="hideBose">
+      <!-- 年龄 -->
+      <label class="item item-input item-select">
+        <span class="input-label">年龄</span>
+        <select ng-model="task.bossAge">
+          <option value="0">20岁以下</option>
+          <option value="1">20～30岁</option>
+          <option value="2">30～40岁</option>
+          <option value="3">41～50岁</option>
+          <option value="4">50岁以上</option>
+        </select>
+      </label>
+      <!-- 家庭成员 -->
+      <label class="item item-input">
+        <span class="input-label">家庭成员</span>
+        <input type="text" ng-model="task.bossHomeMember">
+      </label>
+      <!-- 互联网意识 -->
+      <label class="item item-input item-select">
+        <span class="input-label">手机型号</span>
+        <select ng-model="task.bossPhone">
+          <option value="0">使用非智能手机</option>
+          <option value="1">使用（安卓／苹果）手机</option>
+          <option value="2">会基本电脑操作</option>
+          <option value="3">网络达人</option>
+        </select>
+      </label>
+      <!-- 微信号 -->
+      <label class="item item-input">
+        <span class="input-label">微信号</span>
+        <input type="text" ng-model="task.bossWechat">
+      </label>
+      </div>
+    </div>
+
+
+    <div class="card list task_detail_store_card"  ng-hide="task.type != 0">
+      <div class="item item-divider item-icon-right item-positive" ng-click="hideQuestions = !hideQuestions">
+        关注的问题<i class="icon" ng-class="{ true: 'ion-ios-arrow-right', false:'ion-ios-arrow-down'}[hideQuestions]"></i>
+      </div>
+      <div class="item list" ng-hide="hideQuestions">
+        <div class="item" ng-repeat=" question in task.questions">
+          问题{{$index + 1}}:
+          <textarea name="" style="width:100%; " maxlength="40" ng-model="question.question_title"></textarea>
+        </div>
+        <div class="item" style="text-align: center; padding: 0px; ">
+          <a class="button button-icon icon ion-ios-plus positive" href="javascript:void(0)" ng-click="addQuestion()"></a>
+        </div>
+      </div>
+    </div>    
+
   </ion-content>
 </ion-view>

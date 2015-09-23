@@ -7,31 +7,22 @@
   right: auto;
   padding: 0 48px 0 0px;
 }
+#storeSearchArea .row, .col{ padding: 0; } 
 </style>
 <ion-view view-title="番茄辣椒">
   <ion-content>
-  	<div class="list padding">
+  	<div class="list padding" id="storeSearchArea">
       <label class="item item-input">
-        <span class="input-label">店名或电话</span>
         <input type="text" placeholder="店名/电话" ng-model="queryCondition.leaguerName">
       </label>
-      <label class="item item-input item-select">
-        <span class="input-label">门店区域</span>
-        <select ng-model="queryCondition.areaId">
-          <option value="9000000">全部</option>
-          <option value="440300001">宝安</option>
-          <option value="440300002">南山</option>
-          <option value="440300003">福田</option>
-          <option value="440300004">龙岗</option>
-          <option value="440300005">罗湖</option>
-          <option value="440300006">龙华</option>
-        </select>
-      </label>
-      <label class="item item-button">
-        <button class="button button-calm" ng-click="search()">
-          <i class="icon ion-ios-search"></i>
-        </button>
-      </label>
+      <div class="item row">
+        <div class="col col-80">
+          <input type＝"button" class="button button-clear" placeholder="选择区域" ng-model="queryCondition.areaName" ng-click="gotoSelect()" style="width: 100%;padding-left: 16px; text-align: left;  color: rgb(17, 17, 17); " />
+        </div>
+        <div class="col" style="text-align:right">
+          <a class="button icon ion-ios-search button-balanced" ng-click="search()"></a>
+        </div>
+      </div>
   	</div>
 
     <div class="list" id="store_list" ></div>
