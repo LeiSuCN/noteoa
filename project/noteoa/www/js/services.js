@@ -6,14 +6,38 @@ top.window.MWCONFIG = top.window.MWCONFIG || {
 angular.module('mwnoteoa.services', [])
 
 //
+// ======== ======== ======== ========>> 本地存储 <<======== ======== ======== ========
+//
+.factory('MwStorage', function($window) {
+
+  console.log( 'mwnoteoa.services.MwStorage service is initializing...' );
+
+  return {
+    set: function(key, value) {
+      $window.localStorage[key] = value;
+    },
+    get: function(key, defaultValue) {
+      return $window.localStorage[key] || defaultValue;
+    },
+    setObject: function(key, value) {
+      $window.localStorage[key] = JSON.stringify(value);
+    },
+    getObject: function(key) {
+      return JSON.parse($window.localStorage[key] || '{}');
+    }
+  }
+})
+
+//
 // ======== ======== ======== ========>> 任务管理 <<======== ======== ======== ========
 //
-.factory('Task', function($http){
+.factory('Task', function($http, MwStorage){
 
   //
   console.log( 'mwnoteoa.services.Task service is initializing...' );
 
   var dataUrlMissionListToday = '/index.php?r=mission/getlist-today'
+  var dataUrlMissionListDel = '/index.php?r=mission/cancel'
   var dataUrlUpdateStore = '/index.php?r=mission/updstore'
   var dataUrlAddStore = '/index.php?r=mission/addstore'
   var dataUrlFinish = '/index.php?r=mission/finished'; // 完成任务
@@ -59,6 +83,7 @@ angular.module('mwnoteoa.services', [])
   // @param time 任务创立的时间
   function getTodayTasks(params, callback){
 
+    // 清空任务数据 
     _todayTasks.length = 0;
 
     $http.post( MWCONFIG.server + dataUrlMissionListToday, params )
@@ -70,7 +95,7 @@ angular.module('mwnoteoa.services', [])
           })
         }
 
-        // 更新视图
+        // 更新视图 ugly!!!
         if( _todayTasksView ){
           _todayTasksView( _todayTasks );
         }
@@ -104,8 +129,10 @@ angular.module('mwnoteoa.services', [])
       url += dataUrlAddStore;
     } else if( task.type == '1' ){
       url += dataUrlUpdateStore;
+    } else if( task.type == '9' ){
+      url += dataUrlMissionListDel;
     } else{
-      return; //TODO
+      return;
     }
 
     $http.post( url, task )
@@ -168,8 +195,6 @@ angular.module('mwnoteoa.services', [])
   function getShareValue( name ){
     return _shares[name];
   }
-
-
 
   return {
     taskTypes:taskTypes,

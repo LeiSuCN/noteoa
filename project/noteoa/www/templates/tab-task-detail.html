@@ -15,7 +15,7 @@
     <button id="task_detail_btn_submit" class="button button-clear" style="color:white;" ng-click ="submit()">提交</button>  
   </ion-nav-buttons>
 
-  <ion-content overflow-scroll="true">
+  <ion-content>
 
     <div class="list">
       <label class="item item-input">
@@ -62,11 +62,11 @@
         门店信息<i class="icon" ng-class="{ true: 'ion-ios-arrow-right', false:'ion-ios-arrow-down'}[hideMain]"></i>
       </div>
       <div class="item list" ng-hide="hideMain">
-      <!-- 门店地理位置 -->
+      <!-- 门店地理位置 
       <label class="item item-input">
         <span class="input-label">门店地理位置</span>
         <input type="text" name="address" ng-model="store.address">
-      </label>
+      </label>-->
       <!-- 入口位置 -->
       <label class="item item-input">
         <span class="input-label">入口位置</span>
@@ -75,7 +75,7 @@
       <!-- 开业时间 -->
       <label class="item item-input  item-select">
         <span class="input-label">开业时间</span>
-        <select ng-model="task.openDate">
+        <select ng-model="task.openingTime">
           <option value="00:00">00:00</option>
           <option value="01:00">01:00</option>
           <option value="02:00">02:00</option>

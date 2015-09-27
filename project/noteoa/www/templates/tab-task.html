@@ -8,7 +8,7 @@
 <ion-view view-title="番茄辣椒">
   <ion-content class="padding">
   	<div id="taskTody" class="card">
-  		<div class="item item-divider item-icon-right">
+  		<div class="item item-divider item-icon-right item-positive">
   			{{today | date : 'MM月dd日'}}关注番茄<a  href="#/tab/task/add"><i class="icon ion-ios-plus-outline"></i></a>
   		</div>
 
@@ -16,7 +16,7 @@
         <div class="item item-icon-left item-icon-right" ng-click="toggle('0')">
           <i class="icon ion-ios-bolt-outline"></i>
           种番茄（拓展）
-          <span class="badge badge-balanced" style="margin-right: .5em;">＋{{ sumary0.done }}</span>
+          <span class="badge badge-balanced" style="margin-right: .5em;">目标:2 计划:{{tasks0.length}} 完成:{{sumary0.done }}</span>
           <i class="icon ion-ios-arrow-right" id="arrow0"></i>
         </div>
         <div class="item list" id="task_list_0" style="display: none;">
@@ -29,7 +29,7 @@
         <div class="item item-icon-left item-icon-right" ng-click="toggle('1')">
           <i class="icon ion-ios-flame-outline"></i>
           收辣椒（维护）
-          <span class="badge badge-balanced" style="margin-right: .5em;">＋{{ sumary1.done }}</span>
+          <span class="badge badge-balanced" style="margin-right: .5em;">目标:2 计划:{{tasks1.length}} 完成:{{sumary1.done }}</span>
           <i class="icon ion-ios-arrow-right" id="arrow1"></i>
         </div>
         <div class="item list" id="task_list_1" style="display: none;">

@@ -13,6 +13,7 @@ angular.module('mwnoteoa.controllers', ['ionic'])
   // 更新今日任务列表
   function updateTodayTasksView( todayTasks ){
 
+    // 初始化统计数据
     $scope.sumary0.done = 0;
     $scope.tasks0.length = 0;
     $scope.sumary1.done = 0;
@@ -38,6 +39,11 @@ angular.module('mwnoteoa.controllers', ['ionic'])
         tasks.splice(0,0, task );
       }
     });
+
+    // 传递任务统计
+    Task.setShareValue('TaskCtrl.sumary0', $scope.sumary0);
+    Task.setShareValue('TaskCtrl.tasks0', $scope.tasks0);
+    Task.setShareValue('TaskCtrl.tasks1', $scope.tasks1)
   }
 
   //
@@ -72,69 +78,98 @@ angular.module('mwnoteoa.controllers', ['ionic'])
   Task.setShareValue('TaskCtrl.scope.tasks1', $scope.tasks1);
 
   $scope.getTodayTasks();
-  return;
-  if(window.localStorage.getItem("password") === "undefined" || window.localStorage.getItem("password") === null) {
-    $ionicViewService.nextViewOptions({
-        disableAnimate: true,
-        disableBack: true
-    });
-    $location.path("#/tab/login");
-  }
 
 })
 
 // 工作管理 - 新增任务
-.controller('TaskAddCtrl', function($scope, $ionicHistory, $ionicLoading, Task, User) {
+.controller('TaskAddCtrl', function($scope, $ionicHistory, $ionicLoading, $state, Task, User) {
+
+  console.log( 'mwnoteoa.controllers.TaskAddCtrl is initializing...' );
 
   var types = {
     'addstore': '0',
     'updstore': '1'
   }
 
+  // 任务提交计数
   var taskCount = 0;
+  // 要删除的任务
+  var _delUpdTasks = {} 
 
+  // 当前用户
   var me = User.me();
+  // TaskCtrl传递的共享变量
+  var taskCtrlSumary0 = Task.getShareValue('TaskCtrl.sumary0');
+  var taskCtrlTasks0 = Task.getShareValue('TaskCtrl.tasks0');
+  var taskCtrlTasks1 = Task.getShareValue('TaskCtrl.tasks1');
 
   // 拓展任务数量
-  $scope.addStore = 2;
+  $scope.addStore = taskCtrlTasks0 ? taskCtrlTasks0.length : 0;
+  // 拓展任务数最小数字：已完成的最小数字
+  var minAddStoreNum = taskCtrlSumary0.done;
+  var maxAddStoreNum = 99;
   // 维护任务列表
   $scope.updStore = [];
-
-
+  angular.forEach(taskCtrlTasks1, function(task){
+    $scope.updStore.push({
+      id: task.leaguer_id,
+      leaguer_name: task.leaguer_name,
+      boss_phone: task.boss_phone,
+      address: task.address
+    });
+  });
+  // 减少开拓任务
   $scope.decreaseAddStore = function( ){
-    if( $scope.addStore <= 0 ){
+    if( $scope.addStore <= minAddStoreNum ){
       return;
     }
     $scope.addStore = $scope.addStore - 1;
   }
-
+  // 增加开拓任务
   $scope.increaseAddStore = function( ){
-    if( $scope.addStore >= 99 ){
+    if( $scope.addStore >= maxAddStoreNum ){
       return;
     }
     $scope.addStore = $scope.addStore + 1;
   }
+  // 减少维护任务
+  $scope.delUpdStore = function(store){
+    var exist = store._exist;
 
-  $scope.increaseUpdStore = function(){
-
-    var oldUpdStore = $scope.updStore;
-    var newUpdStore = [];
-
-    angular.forEach( oldUpdStore, function(delStore){
-
-      if( !delStore.delete ){
-        newUpdStore.push( delStore );
+    for( var i = 0 ; i < $scope.updStore.length ; i++ ){
+      var current = $scope.updStore[i];
+      if( current.id == store.id ){
+        $scope.updStore.splice(i,1);
+        break;
       }
-    });
+    }
 
-    $scope.updStore.length = 0;
-    angular.forEach( newUpdStore, function(store){
-      $scope.updStore.push( store );
+    // 将要删除的已经存在的任务
+    angular.forEach( taskCtrlTasks1, function(task){
+      if( task.leaguer_id == store.id ){
+        _delUpdTasks[store.id] = task;
+      }
     });
   }
 
+  $scope.toSelectStore = function(){
+
+    Task.setShareValue('TaskStoreSearchCtrl.exclude', $scope.updStore);
+
+    $state.go( 'tab.task-ssearch');
+  }
+  Task.setShareValue('TaskStoreSearchCtrl.selecteStore', function(store){
+    $scope.updStore.push( store );
+    // 如果已经删除 需要恢复
+    for( var taskId in _delUpdTasks ){
+      if( _delUpdTasks[taskId] 
+        && _delUpdTasks[taskId].leaguer_id == store.id ){
+        _delUpdTasks[taskId] = false;
+      }
+    }
+  });
+
   $scope.taskStore = { type: false, store:false };
-  Task.setShareValue('task-stores', $scope.updStore);
 
   function typeChange(){
     var type = $scope.taskStore.type;
@@ -159,23 +194,34 @@ angular.module('mwnoteoa.controllers', ['ionic'])
 
   function save(){
 
-    taskCount = $scope.updStore.length;
-    if( $scope.addStore > 0 )taskCount = taskCount + 1;
-
-    if( taskCount <= 0 ) return;
-
     var tasks = [];
+    var delTasks = [];
 
     $ionicLoading.show({ template: '正在创建任务...' });
 
-    if( $scope.addStore > 0 ){ // 提交维护任务
-      var task = {};
-      task.handlerId = me.id;
-      task.handlerName = me.name;
-      task.handlerPhone = me.phone;
-      task.type = 0;
-      task.mNum = $scope.addStore;
-      tasks.push( task );
+    if( $scope.addStore > minAddStoreNum ){ // 提交维护任务
+      // 增加维护任务
+      if( $scope.addStore > taskCtrlTasks0.length ){
+        var task = {};
+        task.handlerId = me.id;
+        task.handlerName = me.name;
+        task.handlerPhone = me.phone;
+        task.type = 0;
+        task.mNum = $scope.addStore - taskCtrlTasks0.length;
+        tasks.push( task );        
+      }
+      // 删除维护任务
+      else if( $scope.addStore < taskCtrlTasks0.length ){
+        var count = taskCtrlTasks0.length - $scope.addStore;
+        for( var i = taskCtrlTasks0.length -1 ; i >=0  ; i-- ){
+          var task = taskCtrlTasks0[i];
+          if( task.mission_state == '0' ){
+            delTasks.push( task.id );
+          }
+
+          if( delTasks.length == count )break;
+        }
+      }
     }
 
     angular.forEach( $scope.updStore, function(store){
@@ -188,9 +234,40 @@ angular.module('mwnoteoa.controllers', ['ionic'])
       task.leaguerName = store.leaguer_name;
       task.address = $scope.taskStore.store.address;
       task.bossPhone = store.boss_phone;
-      tasks.push( task );
+
+      // 已经维护的任务不在提交
+      var exist = false;
+      angular.forEach( taskCtrlTasks1, function(task){
+        if( task.leaguer_id == store.id ){
+          exist = true;
+        }
+      });
+
+      if( !exist ){
+        tasks.push( task );
+      }
     });
 
+    for( var tid in _delUpdTasks ){
+      if( _delUpdTasks[tid] ){
+        delTasks.push( _delUpdTasks[tid].id )
+      }
+    }
+
+    console.log( delTasks );
+    console.log( tasks ); 
+
+    // 删除任务
+    if( delTasks.length > 0 ){
+      var task = {};
+      task.handlerId = me.id;
+      task.type = 9;
+      task.ids = delTasks;
+      tasks.push( task );         
+    }
+
+    taskCount = tasks.length;
+    if( taskCount <= 0 )return;
     angular.forEach( tasks, function(task){
       saveOne(task)
     });
@@ -205,56 +282,62 @@ angular.module('mwnoteoa.controllers', ['ionic'])
 
 
 // 工作管理 - 新增任务 - 选择门店
-.controller('TaskStoreSearchCtrl', function($scope, $ionicHistory, $ionicPopup, Store, Task) {
+.controller('TaskStoreSearchCtrl', function($scope, $ionicHistory, $ionicPopup, $ionicLoading, Store, Task, User) {
 
   console.log( 'mwnoteoa.controllers.TaskStoreSearchCtrl is initializing...' );
 
-  // 已经添加过的门店
-  var addedStores = Task.getShareValue('task-stores');
-  var choosedStores = Task.getShareValue('TaskCtrl.scope.tasks1');
+  var excludeStores = Task.getShareValue('TaskStoreSearchCtrl.exclude');
+  excludeStores = excludeStores ? excludeStores : [];
+  var selecteStore = Task.getShareValue('TaskStoreSearchCtrl.selecteStore');
 
   // 更新门店列表
   $scope.stores = [];
 
-  Store.getAll( {handlerId:3 }, function(resp){
-    angular.forEach( resp, function( store ){
-      var cStore = {};
-      cStore.id = store.id;
-      cStore.leaguer_name = store.leaguer_name;
-      cStore.boss_phone = store.boss_phone;
-      cStore.area_id = store.area_id;
-      cStore.address = store.address;
-      cStore.checked = false;
-      // 已经添加的门店不再选取
-      for( var i = 0 ; i < addedStores.length ; i++ ){
-        if( addedStores[i].id == cStore.id ){
-          cStore.checked = true;
-          break;
-        }
-      }
-      // 已经生成任务的门店不在选取
-      for( var i = 0 ; i < choosedStores.length ; i++ ){
-        if( choosedStores[i].leaguer_id == cStore.id ){
-          cStore.checked = true;
-          break;
-        }
-      }
+  var me = User.me();
 
-      if( !cStore.checked ){
-        $scope.stores.push( cStore );
-      }
+  function getAllStores(){
+    $ionicLoading.show({ template: '正在查询门店...' });
+    Store.getAll( {handlerId:me.id, areaId: me.area_id }, function(resp){
+      angular.forEach( resp, function( store ){
+        var cStore = {};
+        cStore.id = store.id;
+        cStore.leaguer_name = store.leaguer_name;
+        cStore.boss_phone = store.boss_phone;
+        cStore.area_id = store.area_id;
+        cStore.address = store.address;
+        cStore.checked = false;
+        var exclude = false;
+        
+        // 排除选取的门店
+        for( var i = 0 ; i < excludeStores.length ; i++ ){
+          if( excludeStores[i].id == cStore.id ){
+            exclude = true;
+            break;
+          }
+        }
+  
+        if( !exclude ){
+          $scope.stores.push( cStore );
+        }
+      });
+  
+      $ionicLoading.hide();
     });
-  });
+  }
 
   $scope.confirm = function(){
 
     angular.forEach( $scope.stores, function( store){
       if( store.checked ){
-        addedStores.push(store);
+        if( selecteStore ){
+          selecteStore( store );
+        }
       }
     });
     $ionicHistory.goBack();
   }
+
+  getAllStores();
 })
 
 //
@@ -443,14 +526,14 @@ angular.module('mwnoteoa.controllers', ['ionic'])
   if( _task.type == '0' || _task.status == '1' ){
 
     Store.getOne( _task.leaguer_id,function(data){
-      console.log( data )
+
       data = data[0];
       // 门店地理位置
       //$scope.task.
       // 入口位置
       $scope.task.faceSide = data.face_side;
       // 开业时间
-      $scope.task.openDate = data.open_date;
+      $scope.task.openingTime = data.opening_time;
       // 门店主营业务
       $scope.task.majorBusiness = data.major_business;
       // 门店周边环境
@@ -516,7 +599,7 @@ angular.module('mwnoteoa.controllers', ['ionic'])
 
   var me = User.me();
 
-  $scope.queryCondition = { leaguerName: '', areaId:'900000', areaName: '', handlerId: me.id };
+  $scope.queryCondition = { leaguerName: '', areaId:'', areaName: '', handlerId: me.id };
   Store.share.leaguerSearchCondition = $scope.queryCondition;
 
   var templateStoreListItem = angular.element('#template_store_list_item').html();
@@ -539,7 +622,14 @@ angular.module('mwnoteoa.controllers', ['ionic'])
   }
 
   $scope.search = function(){
-    Store.search( $scope.queryCondition, function(resp){
+
+    var query = {};
+    if( $scope.queryCondition.leaguerName ) query.leaguerName = $scope.queryCondition.leaguerName;
+    if( $scope.queryCondition.handlerId ) query.handlerId = $scope.queryCondition.handlerId;
+    if( $scope.queryCondition.areaName ) query.areaName = $scope.queryCondition.areaName;
+    if( $scope.queryCondition.areaId ) query.areaId = $scope.queryCondition.areaId;
+
+    Store.search( query, function(resp){
       updateStoreListView( resp );
     });
   }

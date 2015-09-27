@@ -1,15 +1,31 @@
 <style type="text/css">
 </style>
 <ion-view view-title="番茄辣椒">
-    
-    <ion-header-bar class="bar-light bar-subheader  item-input-inset">
-      <label class="item-input-wrapper">
-        <i class="icon ion-ios-search placeholder-icon"></i>
-        <input type="search" placeholder="搜索" ng-model="query">
-      </label>
-      <button class="button button-balanced" ng-click="confirm()">确定</button>
-    </ion-header-bar>
 
+
+  <ion-header-bar class="bar-light bar-subheader  item-input-inset">
+    <label class="item-input-wrapper">
+      <i class="icon ion-ios-search placeholder-icon"></i>
+      <input type="search" placeholder="搜索" ng-model="query">
+    </label>
+    <button class="button button-balanced" ng-click="confirm()">确定</button>
+  </ion-header-bar>
+
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-checkbox" ng-repeat="store in stores | filter:query">
+        <label class="checkbox">
+          <input type="checkbox" ng-model="store.checked" >  
+        </label>
+        <div class="item-content">
+          <h2>{{store.leaguer_name}}<span style="margin-left:2em;">{{store.boss_phone}}</span></h2>
+          <p>{{ store.area_id | areaid2name }}区 {{store.address}}</p>
+        </div>
+      </ion-item>
+    </ion-list> 
+  </ion-content>
+
+  <!--
   <ion-content overflow-scroll="true">
     <ul class="list">
       <li class="item item-checkbox" ng-repeat="store in stores | filter:query">
@@ -23,4 +39,6 @@
       </li>
     </ul>   
   </ion-content>
+  -->
+
 </ion-view>

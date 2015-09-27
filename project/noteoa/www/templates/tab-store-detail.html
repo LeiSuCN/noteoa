@@ -32,7 +32,7 @@
   		<!-- 入口位置 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">入口位置</span>
-  			<input type="text" name="">
+  			<input type="text" name="" ng-model="store.faceSide">
   		</label>
   		<!-- 开业时间 -->
    		<label class="item item-input item-select item-stacked-label">
@@ -101,7 +101,7 @@
         </select>
   		</label>
   		<!-- 辐射人流量（人／天） -->
-  		<label class="item item-input input-select item-stacked-label">
+  		<label class="item item-input item-select item-stacked-label">
   			<span class="input-label">辐射人流量（人／天）</span>
         <select ng-model="store.avg_person_day">
           <option value="0">500～1000</option>
@@ -181,15 +181,21 @@
   		</label>
       -->
   		<!-- 进店人流量 -->
-   		<label class="item item-input item-stacked-label">
+   		<label class="item item-input item-select item-stacked-label">
   			<span class="input-label">进店人流量</span>
-  			<input type="text" name="avg_person_day" ng-model="store.avg_person_day">
+        <select ng-model="store.avg_person_day">
+          <option value="0">20～50</option>
+          <option value="1">50～100</option>
+          <option value="2">100～300</option>
+          <option value="3">300人以上</option>
+        </select>
   		</label>
- 		<!-- 营业时间 -->
+ 		<!-- 营业时间 
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">营业时间</span>
   			<input type="text" name="opening_time" ng-model="store.opening_time">
   		</label>
+      -->
   		<!-- 营业额 -->
   		<label class="item item-input item-stacked-label">
   			<span class="input-label">营业额</span>

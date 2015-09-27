@@ -28,13 +28,22 @@
       <div class="item item-input">
         <span class="input-label">维护</span>
         <div class="controll">
-          <button class="button button-clear button-positive icon ion-ios-minus-empty" ng-click="increaseUpdStore();"></button>
+          <!--<button class="button button-clear button-positive icon ion-ios-minus-empty" ng-click="increaseUpdStore();"></button>-->
           <span class="button">{{updStore.length}}</span>
-          <a class="button button-clear button-positive icon ion-ios-plus-empty" href="#/tab/task/ssearch"></a>
+          <a class="button button-clear button-positive icon ion-ios-plus-empty" ng-click="toSelectStore()"></a>
         </div>
       </div>
     </div>
 
+    <ion-list>
+      <ion-item ng-repeat="store in updStore">
+        <h2>{{store.leaguer_name}}<span style="float:right">{{store.boss_phone}}</span></h2>
+        <p>{{store.address}}</p>
+      <ion-option-button class="button-assertive" ng-click="delUpdStore(store)">删除</ion-option-button>
+      </ion-item>
+    </ion-list>
+
+    <!--
     <ul class="list" id="upd_store_list">
       <li class="item item-checkbox" ng-repeat="store in updStore">
         <label class="checkbox">
@@ -46,6 +55,7 @@
         </div>
       </li>
     </ul>
+    -->
 
     <div class="padding">
       <button class="button button-block button-balanced" ng-click="save()">
