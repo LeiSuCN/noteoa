@@ -282,7 +282,7 @@ angular.module('mwnoteoa.controllers', ['ionic'])
 
 
 // 工作管理 - 新增任务 - 选择门店
-.controller('TaskStoreSearchCtrl', function($scope, $ionicHistory, $ionicPopup, $ionicLoading, Store, Task, User) {
+.controller('TaskStoreSearchCtrl', function($scope, $state, $ionicHistory, $ionicPopup, $ionicLoading, Store, Task, User) {
 
   console.log( 'mwnoteoa.controllers.TaskStoreSearchCtrl is initializing...' );
 
@@ -290,39 +290,80 @@ angular.module('mwnoteoa.controllers', ['ionic'])
   excludeStores = excludeStores ? excludeStores : [];
   var selecteStore = Task.getShareValue('TaskStoreSearchCtrl.selecteStore');
 
+  // 门店区域搜素
+  $scope.searchAreaID = '440300';
+  $scope.searchAreaName = '全市';
+  $scope.searchPage = 0;
+  // 每页大小
+  var limit = 20;
+  $scope.hasMore = true;
   // 更新门店列表
   $scope.stores = [];
 
   var me = User.me();
 
-  function getAllStores(){
+  /*
+   * 向列表中加入门店数据
+   */
+  function addStore( store ){
+    var cStore = {};
+    cStore.id = store.id;
+    cStore.leaguer_name = store.leaguer_name;
+    cStore.boss_phone = store.boss_phone;
+    cStore.area_id = store.area_id;
+    cStore.address = store.address;
+    cStore.checked = false;
+    
+    var exclude = false;    
+    // 排除选取的门店
+    for( var i = 0 ; i < excludeStores.length ; i++ ){
+      if( excludeStores[i].id == cStore.id ){
+        exclude = true;
+        break;
+      }
+    }  
+    if( !exclude ){
+      $scope.stores.push( cStore );
+    }
+  }
+
+  /**
+   * 按照查询条件分页查询
+   */
+  function getStoresByPage(){
+
+    var query = {handlerId:me.id, areaId: $scope.searchAreaID};
+    query.page = $scope.searchPage;
+    query.limit = 20;
     $ionicLoading.show({ template: '正在查询门店...' });
-    Store.getAll( {handlerId:me.id, areaId: me.area_id }, function(resp){
-      angular.forEach( resp, function( store ){
-        var cStore = {};
-        cStore.id = store.id;
-        cStore.leaguer_name = store.leaguer_name;
-        cStore.boss_phone = store.boss_phone;
-        cStore.area_id = store.area_id;
-        cStore.address = store.address;
-        cStore.checked = false;
-        var exclude = false;
-        
-        // 排除选取的门店
-        for( var i = 0 ; i < excludeStores.length ; i++ ){
-          if( excludeStores[i].id == cStore.id ){
-            exclude = true;
-            break;
-          }
-        }
-  
-        if( !exclude ){
-          $scope.stores.push( cStore );
-        }
+    Store.get( query, function(status, statusText, data){
+      console.log( data.length )
+      $scope.hasMore = data && data.length == limit
+      $scope.searchPage = $scope.searchPage + 1;
+
+      angular.forEach( data, function( store ){
+        addStore( store );
       });
-  
       $ionicLoading.hide();
     });
+  }
+
+  $scope.gotoSelect = function(){
+    Store.share.leaguerSearchCallback = function(areaId, areaName){
+      $scope.searchAreaID = areaId;
+      $scope.searchAreaName = areaName;
+      angular.element('#taskStoreSearch_SearchBtnArea_AreaBtn').html( areaName );
+      Store.share.leaguerSearchCallback = false;
+      $scope.stores.length = 0;
+      $scope.searchPage = 0;
+      getStoresByPage();
+    };
+    $state.go( 'tab.store-area-select')
+    
+  }
+
+  $scope.getMore = function(){
+    getStoresByPage();
   }
 
   $scope.confirm = function(){
@@ -337,17 +378,19 @@ angular.module('mwnoteoa.controllers', ['ionic'])
     $ionicHistory.goBack();
   }
 
-  getAllStores();
+  getStoresByPage();
 })
 
 //
 // ======== ======== ======== ========>> 查看&提交管理 <<======== ======== ======== ========
 //
-.controller('TaskDetailCtrl', function($scope, $stateParams,$ionicHistory, $ionicPopup,  $ionicLoading, Task, Store, User) {
+.controller('TaskDetailCtrl', function($scope, $stateParams, $ionicHistory
+    , $ionicPopup,  $ionicLoading, Task, Store, User) {
   
   $scope.hideMain = true;
   $scope.hideEnv = true;
   $scope.hideHard = true;
+  $scope.hideSoft = true;
   $scope.hideBose = true;
 
   $scope.hideQuestions = true;
@@ -534,6 +577,8 @@ angular.module('mwnoteoa.controllers', ['ionic'])
       $scope.task.faceSide = data.face_side;
       // 开业时间
       $scope.task.openingTime = data.opening_time;
+      // 营业时长
+      $scope.task.openDate = data.open_date;
       // 门店主营业务
       $scope.task.majorBusiness = data.major_business;
       // 门店周边环境
@@ -554,6 +599,12 @@ angular.module('mwnoteoa.controllers', ['ionic'])
       $scope.task.storeMemberAge = data.store_member_age;
       // 老板是否参与
       $scope.task.bossIn = data.boss_in;
+
+      // 进店人流量
+      $scope.task.avgPersonAround = data.avg_person_around;
+      // 营业额
+      $scope.task.avgSellDay = data.avg_sell_day;
+
       // 年龄
       $scope.task.bossAge = data.boss_age;
       // 家庭成员
@@ -594,46 +645,107 @@ angular.module('mwnoteoa.controllers', ['ionic'])
   }
 })
 
-// 门店查询
+//
+// ======== ======== ======== ========>> 门店查询 <<======== ======== ======== ========
+//
 .controller('StoreCtrl', function($scope,$state, Store, User) {
 
   var me = User.me();
+  var isHasMore = true;
+  var limit = 20;
+  var page = -1;
 
+  // 查询条件
   $scope.queryCondition = { leaguerName: '', areaId:'', areaName: '', handlerId: me.id };
   Store.share.leaguerSearchCondition = $scope.queryCondition;
 
-  var templateStoreListItem = angular.element('#template_store_list_item').html();
+  // 门店列表
+  $scope.stores = [];
 
   // 更新门店列表
   function updateStoreListView(stores){
-    
-    var storeEles = '';
-    angular.forEach(stores, function(store,key){
-      storeEles += Mustache.render(templateStoreListItem, store);
+    var i = 0;
+    angular.forEach(stores, function(store){
+      $scope.stores.push( store );
+      i++;
     });
-
-    var eleStoreList = angular.element('#store_list');
-    eleStoreList.empty();
-    eleStoreList.append( storeEles );
+    return i;
   }
 
-  $scope.gotoSelect = function(){
-    $state.go( 'tab.store-area')
-  }
-
-  $scope.search = function(){
-
+  /*
+   * 获取当前查询条件
+   */
+  function getCurrentQueryCondition(){
     var query = {};
     if( $scope.queryCondition.leaguerName ) query.leaguerName = $scope.queryCondition.leaguerName;
     if( $scope.queryCondition.handlerId ) query.handlerId = $scope.queryCondition.handlerId;
     if( $scope.queryCondition.areaName ) query.areaName = $scope.queryCondition.areaName;
     if( $scope.queryCondition.areaId ) query.areaId = $scope.queryCondition.areaId;
+    query.page = page;
+    query.limit = limit;
+
+    return query;
+  }
+
+  $scope.gotoSelect = function(){
+    Store.share.leaguerSearchCondition = $scope.queryCondition;
+    Store.share.leaguerSearchCallback = function(areaId, areaName){
+      Store.share.leaguerSearchCallback = false;
+      $scope.search();
+    }
+    $state.go( 'tab.store-area');
+  }
+
+  $scope.gotoStore = function(store,$event){
+    var srcEle = $event.originalEvent.srcElement;
+    if( srcEle && (srcEle.nodeName == 'A' || srcEle.nodeName == 'a') ){
+
+    } else{
+      $state.go( 'tab.store-detail', {storeId:store.id});
+    }
+  }
+
+  $scope.search = function( query ){
+
+    // 如果不带query，则复位查询条件
+    if( !query ){
+      $scope.stores.length = 0;
+      page = 0;
+      query = getCurrentQueryCondition();
+    }
 
     Store.search( query, function(resp){
-      updateStoreListView( resp );
+      var count = updateStoreListView( resp );
+      isHasMore = ( count >= limit );
+      $scope.$broadcast('scroll.infiniteScrollComplete');
     });
   }
 
+  /*
+   * 加载更多数据
+   */
+  $scope.loadMore = function(){
+
+    page = page + 1;
+    var query = getCurrentQueryCondition();
+
+    $scope.search(query);
+  }
+
+
+  /*
+   * 是否有跟多数据
+   */
+  $scope.hasMore = function(){
+    return isHasMore;
+  }
+
+  /*
+   * 事件监听：状态加载成功
+   */
+  $scope.$on('$stateChangeSuccess', function(){
+    $scope.loadMore();
+  });
 })
 
 //
@@ -692,7 +804,9 @@ angular.module('mwnoteoa.controllers', ['ionic'])
     { id: '440306005', name: '招商街道', cate: 'ns' },      
     { id: '440306006', name: '沙河街道', cate: 'ns' },      
     { id: '440306007', name: '桃源街道', cate: 'ns' },      
-    { id: '440306008', name: '西丽街道', cate: 'ns' }
+    { id: '440306008', name: '西丽街道', cate: 'ns' },
+
+    { id: '440300', name: '全市', cate: 'sz' }
 
   ];
 
@@ -701,16 +815,28 @@ angular.module('mwnoteoa.controllers', ['ionic'])
 
 
   $scope.submit = function(){
-    if( Store.share.leaguerSearchCondition ){
-      for( var i = 0 ; i < $scope.areas.length; i++ ){
-        var strea = $scope.areas[i];
-        if( strea.id == $scope.result.selected ){
-          Store.share.leaguerSearchCondition.areaId = strea.id;
-          Store.share.leaguerSearchCondition.areaName = strea.name;
-          break;
-        }
+    var areaId = false;
+    var areaName = false;
+    for( var i = 0 ; i < $scope.areas.length; i++ ){
+      var strea = $scope.areas[i];
+      if( strea.id == $scope.result.selected ){
+        areaId = strea.id;
+        areaName = strea.name;
+        break;
       }
     }
+
+    if( areaId ){
+      if( Store.share.leaguerSearchCondition ){
+        Store.share.leaguerSearchCondition.areaId = areaId;
+        Store.share.leaguerSearchCondition.areaName = areaName;
+      }
+
+      if( Store.share.leaguerSearchCallback ){
+        Store.share.leaguerSearchCallback(areaId, areaName);
+      }
+    }
+
     $ionicHistory.goBack();
   }
 })
@@ -765,9 +891,9 @@ angular.module('mwnoteoa.controllers', ['ionic'])
   // 查询门店数据
   function search(){
     Store.getOne(storeId, function(store){
-      $scope.store = store;
+      $scope.store = store[0];
       oldStore = store;
-    });
+    }, true);
   }
 
   var formScope = false;

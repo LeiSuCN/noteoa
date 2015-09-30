@@ -24,14 +24,15 @@
       </div>
   	</div>
 
-    <div class="list" id="store_list" ></div>
+    <ion-list>
+      <ion-item class="item-icon-left" ng-repeat="store in stores track by $index" ng-click="gotoStore(store,$event)">
+        <i class="icon ion-ios-location calm"></i>
+        <h2>{{store.leaguer_name}}<a style="float:right" href="tel:{{store.boss_phone}}">{{store.boss_phone}}</a></h2>
+        <p>{{store.address}}</p>
+      </ion-item>  
+    </ion-list>
+
+    <ion-infinite-scroll on-infinite="loadMore()" distance="1%" ng-if="hasMore()"></ion-infinite-scroll>
     
   </ion-content>
 </ion-view>
-
-<script type="text/html" id="template_store_list_item">
-<a class="item item-store" href="#/tab/store/{{id}}">
-  <h2>{{leaguer_name}}<span>{{boss_phone}}</span></h2>
-  <p>{{address}}</p>
-</a>  
-</script>

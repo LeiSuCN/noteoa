@@ -78,6 +78,17 @@ angular.module('mwnoteoa', ['ionic', 'mwnoteoa.controllers', 'mwnoteoa.services'
     }
   })
 
+  // 工作管理 - 新增任务 - 选择门店 - 区域选择
+  .state('tab.store-area-select', { 
+    url: '/task/asearch',
+    views: {
+      'tab-task': {
+        templateUrl: 'templates/tab-store-area-select.html',
+        controller: 'StoreAreaCtrl'
+      }
+    }
+  })
+   
   // 工作管理 - 任务详情
   .state('tab.task-detail', { 
     url: '/task/:taskId',

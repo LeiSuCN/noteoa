@@ -72,9 +72,9 @@
         <span class="input-label">入口位置</span>
         <input type="text" ng-model="task.faceSide">
       </label>
-      <!-- 开业时间 -->
+      <!-- 营业时间 -->
       <label class="item item-input  item-select">
-        <span class="input-label">开业时间</span>
+        <span class="input-label">营业时间</span>
         <select ng-model="task.openingTime">
           <option value="00:00">00:00</option>
           <option value="01:00">01:00</option>
@@ -100,6 +100,36 @@
           <option value="21:00">21:00</option>
           <option value="22:00">22:00</option>
           <option value="23:00">23:00</option>
+        </select>
+      </label>
+      <!-- 营业时长 -->
+      <label class="item item-input  item-select">
+        <span class="input-label">营业时长</span>
+        <select ng-model="task.openDate">         
+          <option value=01>01</option>
+          <option value=02>02</option>
+          <option value=03>03</option>
+          <option value=04>04</option>
+          <option value=05>05</option>
+          <option value=06>06</option>
+          <option value=07>07</option>
+          <option value=08>08</option>
+          <option value=09>09</option>
+          <option value=10>10</option>
+          <option value=11>11</option>
+          <option value=12>12</option>
+          <option value=13>13</option>
+          <option value=14>14</option>
+          <option value=15>15</option>
+          <option value=16>16</option>
+          <option value=17>17</option>
+          <option value=18>18</option>
+          <option value=19>19</option>
+          <option value=20>20</option>
+          <option value=21>21</option>
+          <option value=22>22</option>
+          <option value=23>23</option>
+          <option value=24>24</option>
         </select>
       </label>
       <!-- 门店主营业务 -->
@@ -221,6 +251,30 @@
       </label>  
       </div>
     </div>
+
+
+    <div class="card list task_detail_store_card"  ng-hide="task.type != 0">
+      <div class="item item-divider item-icon-right item-positive" ng-click="hideSoft = !hideSoft">
+        门店软件实力<i class="icon" ng-class="{ true: 'ion-ios-arrow-right', false:'ion-ios-arrow-down'}[hideSoft]"></i>
+      </div>
+      <div class="item list" ng-hide="hideSoft">
+      <!-- 进店人流量 -->
+      <label class="item item-input item-select">
+        <span class="input-label">进店人流量</span>
+        <select ng-model="task.avgPersonAround">
+          <option value="0">20～50</option>
+          <option value="1">50～100</option>
+          <option value="2">100～300</option>
+          <option value="3">300人以上</option>
+        </select>
+      </label>
+      <!-- 营业额 -->
+      <label class="item item-input">
+        <span class="input-label">营业额</span>
+        <input type="text" ng-model="task.avgSellDay">
+      </label>
+      </div>
+    </div>    
 
     <div class="card list task_detail_store_card"  ng-hide="task.type != 0">
       <div class="item item-divider item-icon-right item-positive" ng-click="hideBose = !hideBose">

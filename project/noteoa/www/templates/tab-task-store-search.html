@@ -1,14 +1,36 @@
 <style type="text/css">
+#taskStoreSearch_SearchBtnArea{ padding: 0px;}
+#taskStoreSearch_SearchBtnArea .col{ padding: 0px;}
+#taskStoreSearch_SearchBtnArea .button{ font-size:14px;}
+#taskStoreSearch_SearchBtnArea .bar .button.button-clear .icon:before, .bar .button.button-clear.icon:before, .bar .button.button-clear.icon-left:before, .bar .button.button-clear.icon-right:before{ font-size:16px;}
 </style>
 <ion-view view-title="番茄辣椒">
 
+  <ion-nav-buttons side="right">
+    <button id="task_detail_btn_submit" class="button button-clear" style="color:white;" ng-click ="confirm()">确定</button>  
+  </ion-nav-buttons>
 
-  <ion-header-bar class="bar-light bar-subheader  item-input-inset">
+  <ion-header-bar class="bar-light bar-subheader bar-balanced">
+    <!--
     <label class="item-input-wrapper">
       <i class="icon ion-ios-search placeholder-icon"></i>
       <input type="search" placeholder="搜索" ng-model="query">
     </label>
     <button class="button button-balanced" ng-click="confirm()">确定</button>
+    -->
+
+    <div class="row" id="taskStoreSearch_SearchBtnArea">
+      <div class="col col-50">
+        <a id="taskStoreSearch_SearchBtnArea_AreaBtn" class="button icon-right ion-ios-arrow-down button-clear button-dark" style="width:90%;color:white;" ng-model="searchAreaId" ng-click="gotoSelect()">{{searchAreaName}}</a>  
+      </div>
+      <div class="col">
+        <label class="item-input-wrapper">
+          <i class="icon ion-ios-search placeholder-icon"></i>
+          <input type="search" placeholder="搜索" ng-model="query" style="background-color: transparent;">
+        </label>
+      </div>
+      
+    </div>
   </ion-header-bar>
 
   <ion-content>
@@ -23,22 +45,20 @@
         </div>
       </ion-item>
     </ion-list> 
+
+    <div style="text-align: center;" ng-show="hasMore">
+      <button class="button button-clear button-stable" ng-click="getMore()">
+        —————— 点击加载更多 ——————
+      </button>
+    </div>
+    <div style="text-align: center;" ng-hide="hasMore">
+      <button class="button button-clear button-stable">
+        —————— 全部加载完成 ——————
+      </button>
+    </div>
+
   </ion-content>
 
-  <!--
-  <ion-content overflow-scroll="true">
-    <ul class="list">
-      <li class="item item-checkbox" ng-repeat="store in stores | filter:query">
-        <label class="checkbox">
-          <input type="checkbox" ng-model="store.checked" >  
-        </label>
-        <div class="item-content">
-          <h2>{{store.leaguer_name}}<span style="margin-left:2em;">{{store.boss_phone}}</span></h2>
-          <p>{{ store.area_id | areaid2name }}区 {{store.address}}</p>
-        </div>
-      </li>
-    </ul>   
-  </ion-content>
-  -->
+
 
 </ion-view>

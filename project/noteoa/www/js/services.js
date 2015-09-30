@@ -305,6 +305,15 @@ angular.module('mwnoteoa.services', [])
   }
 
   /*
+   * 根据条件获取门店信息
+   * @param params  查询参数 
+   * @param callback 回调函数
+   */ 
+  function get( params, callback ){
+    postAndCallback(MWCONFIG.server + dataUrlList, params, callback);
+  }
+
+  /*
    * 只获取一个门店信息
    * @param storeId  门店ID 
    * @param callback 回调函数
@@ -361,6 +370,7 @@ angular.module('mwnoteoa.services', [])
     search: search,
     getOne: getOne,
     getAll: getAll,
+    get: get,
     updateOne: updateOne
   }
 

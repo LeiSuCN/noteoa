@@ -35,6 +35,10 @@
         ng-click="area = 'ns'">
         南山
       </button>
+      <button class="button" ng-class=" {true: 'button-balanced', false:'button-calm'} [area == 'sz']"
+        ng-click="area = 'sz'">
+        全市
+      </button>
     </div>
 
     <div class="list" style="padding-top: 50px;">
